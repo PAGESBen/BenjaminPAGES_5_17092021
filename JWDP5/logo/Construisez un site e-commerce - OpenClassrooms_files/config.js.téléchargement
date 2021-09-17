@@ -1,0 +1,5 @@
+
+window[window["TiktokAnalyticsObject"]].instance("C4KEUPL1KC6QQ9D0STRG").setAdvancedMatchingAvailableProperties({"email":false,"phone_number":false});
+window[window["TiktokAnalyticsObject"]].instance("C4KEUPL1KC6QQ9D0STRG").setPixelInfo && window[window["TiktokAnalyticsObject"]].instance("C4KEUPL1KC6QQ9D0STRG").setPixelInfo({status: 0, name: "Openclassrooms Pixel", advertiserID: "6936201841424252929", setupMode: 0, partner: "", is_onsite: false});
+window[window["TiktokAnalyticsObject"]].setPCMDomain && window[window["TiktokAnalyticsObject"]].setPCMDomain("openclassrooms.com");
+window[window["TiktokAnalyticsObject"]].setPCMConfig && window[window["TiktokAnalyticsObject"]].setPCMConfig([]);
