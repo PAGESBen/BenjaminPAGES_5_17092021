@@ -21,7 +21,7 @@
                     </div>
     
                     <div class="col d-flex justify-content-end">
-                            <a href="cart.html" class="nav-link">
+                            <a href="." class="nav-link">
                                 <svg aria-hidden="true" height="40" focusable="false" data-prefix="fas" data-icon="shopping-cart" class="svg-inline--fa fa-shopping-cart fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path fill="currentColor" d="M528.12 301.319l47.273-208C578.806 78.301 567.391 64 551.99 64H159.208l-9.166-44.81C147.758 8.021 137.93 0 126.529 0H24C10.745 0 0 10.745 0 24v16c0 13.255 10.745 24 24 24h69.883l70.248 343.435C147.325 417.1 136 435.222 136 456c0 30.928 25.072 56 56 56s56-25.072 56-56c0-15.674-6.447-29.835-16.824-40h209.647C430.447 426.165 424 440.326 424 456c0 30.928 25.072 56 56 56s56-25.072 56-56c0-22.172-12.888-41.332-31.579-50.405l5.517-24.276c3.413-15.018-8.002-29.319-23.403-29.319H218.117l-6.545-32h293.145c11.206 0 20.92-7.754 23.403-18.681z"></path></svg>
                             </a>
                         </div>
@@ -32,21 +32,20 @@
     </div>
     <!--fin du header-->
 
-    <!--section hero-->
     <div class="container">
-    
-        <div class="row my-5">
-            <div class="col">
-                <h1>DECOUVREZ NOS PRODUITS</h2>
+
+        <div class="row">
+            <div class="col m-3">
+                <h1>Votre commande</h1>
             </div>
         </div>
 
+        <!--contenu du panier-->
         <div class="row justify-content-center">
-    
-            <!--carte 1-->
             <div class="col col-lg-4">
                 <div class="card m-2">
-                    <img class=”card-img-top” src="./JWDP5/images/teddy_1.jpg" alt=”...”>
+                    <div class="row">
+                    <img class=”card-img-left” src="./JWDP5/images/teddy_1.jpg" alt=”...”>
                     <div class="card-body">
                         <h2 class="card-title text-center">Ours 1</h1>
                         <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod nemo accusamus
@@ -54,68 +53,72 @@
                             ullam dolorum aliquam repellat dolores in sed!</p>
                         <p class="card-text">Prix : <span>2000€</span></p>
                     </div>
-                    <a href="#" class="btn btn-primary stretched-link m-2">Voir l'article</a>
+                    <a href="#" class="btn btn-danger m-2 w-50">Supprimer</a>
+                    <a href="#" class="btn btn-secondary m-2 w-50">Voir l'article</a>
                 </div>
             </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col d-flex justify-content-end h4 m-5">
+            <p>Prix TOTAL : <span>10000</span> € </p>
+        </div>
+    </div>
+    <!--fin du contenu du panier-->
+
+    <!--Formulaire de commande-->
+    <div class="row justify-content-center">
     
-            <!--carte 2-->
-            <div class="col col-lg-4">
-                <div class="card m-2">
-                    <img class=”card-img-top” src="./JWDP5/images/teddy_1.jpg" alt=”...”>
-                    <div class="card-body">
-                        <h2 class="card-title text-center">Ours 1</h1>
-                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod nemo accusamus
-                            cupiditate. Esse minima rem at exercitationem doloribus obcaecati ipsa similique, incidunt, cum
-                            ullam dolorum aliquam repellat dolores in sed!</p>
-                    </div>
-                    <a href="#" class="btn btn-primary stretched-link m-2">Voir l'article</a>
-                </div>
-            </div>
+        <div class="col mx-2 col-lg-6">
+            <form>
+                <div class="row">
     
-            <!--carte 3-->
-            <div class="col col-lg-4">
-                <div class="card m-2">
-                    <img class=”card-img-top” src="./JWDP5/images/teddy_1.jpg" alt=”...”>
-                    <div class="card-body">
-                        <h2 class="card-title text-center">Ours 1</h1>
-                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod nemo accusamus
-                            cupiditate. Esse minima rem at exercitationem doloribus obcaecati ipsa similique, incidunt, cum
-                            ullam dolorum aliquam repellat dolores in sed!</p>
-                    </div>
-                    <a href="#" class="btn btn-primary stretched-link m-2">Voir l'article</a>
-                </div>
-            </div>
+                    <div class="col-12 col-md-4">
+                        <div class="form-group my-2">
+                            <label for="clientName">Prénom</label>
+                            <input type="text" id="clientName" class="form-control" required>
+                        </div>
     
-            <!--carte 4-->
-            <div class="col col-lg-4">
-                <div class="card m-2">
-                    <img class=”card-img-top” src="./JWDP5/images/teddy_1.jpg" alt=”...”>
-                    <div class="card-body">
-                        <h2 class="card-title text-center">Ours 1</h1>
-                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod nemo accusamus
-                            cupiditate. Esse minima rem at exercitationem doloribus obcaecati ipsa similique, incidunt, cum
-                            ullam dolorum aliquam repellat dolores in sed!</p>
-                    </div>
-                    <a href="#" class="btn btn-primary stretched-link m-2">Voir l'article</a>
-                </div>
-            </div>
+                        <div class="form-group my-2">
+                            <label for="clientSurname">Nom</label>
+                            <input type="text" id="clientSurname" class="form-control" required>
+                        </div>
     
-            <!--carte 5-->
-            <div class="col col-lg-4">
-                <div class="card m-2">
-                    <img class=”card-img-top” src="./JWDP5/images/teddy_1.jpg" alt=”...”>
-                    <div class="card-body">
-                        <h2 class="card-title text-center">Ours 1</h1>
-                        <p class="card-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod nemo accusamus
-                            cupiditate. Esse minima rem at exercitationem doloribus obcaecati ipsa similique, incidunt, cum
-                            ullam dolorum aliquam repellat dolores in sed!</p>
+    
+                        <div class="form-group my-2">
+                            <label for="InputEmail1">Email address</label>
+                            <input type="email" class="form-control" id="InputEmail1" aria-describedby="email" placeholder="ex. durant@gmail.com" required>
+                        </div>
                     </div>
-                    <a href="#" class="btn btn-primary stretched-link m-2">Voir l'article</a>
+    
+    
+                    <div class="col-12 col-md-8">
+                        <div class="form-group">
+                            <label for="adress1">adresse</label>
+                            <input type="text" class="form-control my-2" id="adress1" placeholder="adresse 1" required>
+                            <input type="text" class="form-control my-2" id="adress1" placeholder="adresse 2">
+                            <input type="number" class="form-control my-2" id="code" placeholder="code" required>
+                            <input type="text" class="form-control my-2" id="city" placeholder="city" required>
+                        </div>
+                    </div>
                 </div>
-            </div>
+    
+                <div class="row mx-2">
+                    <div class="form-group form-check my-3">
+                        <input type="checkbox" class="form-check-input" id="exampleCheck1" required>
+                        <label class="form-check-label" for="exampleCheck1">J'accepte les conditions de ventes</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary my-1">Submit</button>
+                </div>
+            </form>
+    
     
         </div>
     </div>
+
+    <!--Fin du formulaire-->
 
     <!--Footer-->
     <div class="bg-light">
