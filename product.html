@@ -6,6 +6,9 @@
     <link rel="stylesheet" href="./css/style.css">
     <script src="https://kit.fontawesome.com/c474b2b20f.js" crossorigin="anonymous"></script>
     <title>Oriteddys</title>
+
+    <script src="./js/product.js"></script>
+
 </head>
 <body>
     
@@ -32,32 +35,30 @@
     </div>
     <!--fin du header-->
 
+    <!--produit : -->
     <div class="container">
         <div class="row">
             <div class="col-12 col-lg-6 my-auto">
-                <img class="img-fluid" src="./JWDP5/images/teddy_1.jpg" alt="">
+                <img id="productImg" class="img-fluid" alt="">
             </div>
 
             <div class="col-12 col-lg-6 my-auto">
-                <h1 class="my-5">Ours 1</h1>
-                <p class="my-5">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nesciunt nulla accusamus quo iure facilis unde. Maxime
-                    sit obcaecati nisi iure consequatur. Sed odio porro, aperiam modi deserunt quis excepturi possimus?</p>
+                <h1 id="name" class="my-5"> <!--nom du produit via l'API--> </h1>
+                <p id="description" class="my-5"> <!--description du produit via l'API--> </p>
 
                 <!--code menu déroulant bootstrap 5-->
                 <div class="dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                      Dropdown button
+                      Couleur
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                      <li><a class="dropdown-item" href="#">Action</a></li>
-                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    <ul id="dropdown-colors-menu" class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <!--Liste des couleurs du produit via l'API-->
                     </ul>
                   </div>
                 <!--fin menu déroulant-->
 
                 <div class="d-flex my-5">
-                    <p class="h2 text-right">Prix TTC <span>100€</span></p>
+                    <p class="h2 text-right">Prix : <span id="price"> <!--prix du produit via l'API--> </span> €</p>
                 </div>
 
                 <!--Bouton action ajouter au panier-->

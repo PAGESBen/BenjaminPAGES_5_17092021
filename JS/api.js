@@ -1,3 +1,20 @@
+/* 
+1. faire la requette au web service et recuperer les objets JSON 
+    -fetch 
+    -get.json
+
+2. Generer les elements des cartes et leur ajouter leur classes bootstrap : 
+    -document.createElement()
+    -nomElement.classList.add("", "", "", "")
+
+3. leur donner un contenu : 
+    -nomElement.textContent = ""
+    -ajout attribu pour l'image : nomElement.setAttribute("attribu", "valeur")
+
+4. Les placer dans le DOM : 
+    -nomElementParent.appendChild(elementEnfant)
+*/
+
 
 //déclaration de la fonction 
 async function run() {
@@ -50,6 +67,8 @@ async function run() {
         price.textContent = "Prix : " + peluche.price + " €"
         button.textContent = "Voir l'article"
 
+        //On crée l'url qui contiendra l'ID de l'objet pour la page product
+        button.setAttribute("href", "./product.html?id=" + peluche._id)
 
         // On va récuperer le contener principal dans le DOM -- let elt = document.getElementById('main');
         let mainContainer = document.getElementById('productslist')
@@ -69,19 +88,3 @@ async function run() {
 
 //Execution de la fonction run 
 run()
-
-/* 
-1. faire la requette au web service et recuperer les JSON 
-    -fetch 
-    -get.json
-
-2. Generer les elements des cartes et leur ajouter leur classes bootstrap : 
-    -document.createElement()
-    -nomElement.classList.add("", "", "", "")
-
-3. leur donner un contenu : 
-    -
-
-4. Les placer dans le DOM : 
-    -nomElementParent.appendChild(elementEnfant)
-*/
