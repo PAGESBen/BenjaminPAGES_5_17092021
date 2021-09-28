@@ -47,14 +47,10 @@
                 <p id="description" class="my-5"> <!--description du produit via l'API--> </p>
 
                 <!--code menu déroulant bootstrap 5-->
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                      Couleur
-                    </button>
-                    <ul id="dropdown-colors-menu" class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <!--Liste des couleurs du produit via l'API-->
-                    </ul>
-                  </div>
+                <select id= "selectColor" class="form-select w-50 my-5" aria-label="Color selection">
+                    <option selected>Choix de la couleurs</option>
+                    <!--ajout des options de couleurs du produit via l'API-->
+                  </select>
                 <!--fin menu déroulant-->
 
                 <div class="d-flex my-5">

@@ -19,8 +19,8 @@
 //déclaration de la fonction 
 async function run() {
     let get = await fetch("http://localhost:3000/api/teddies/")
-    let ours = await get.json()
-    for (let peluche of ours) {
+    let products = await get.json()
+    for (let peluche of products) {
 
         console.log(peluche)
         
