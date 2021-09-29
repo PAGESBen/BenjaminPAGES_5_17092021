@@ -8,9 +8,10 @@
     <title>Oriteddys</title>
 
     <script src="./js/product.js"></script>
+    <script src="./js/addtocart.js" defer></script> <!--defer pour executer le code apres le chargement de la page-->
 
 </head>
-<body>
+<body id="body">
     
     <!--header-->
     <div class="bg-dark">
@@ -48,7 +49,7 @@
 
                 <!--code menu déroulant bootstrap 5-->
                 <select id= "selectColor" class="form-select w-50 my-5" aria-label="Color selection">
-                    <option selected>Choix de la couleurs</option>
+                    <option value="NaV" selected>Choix de la couleurs</option>
                     <!--ajout des options de couleurs du produit via l'API-->
                   </select>
                 <!--fin menu déroulant-->
@@ -59,7 +60,7 @@
 
                 <!--Bouton action ajouter au panier-->
                 <div class="d-flex justify-content-center">
-                    <button class="btn btn-success mb-5 w-100">
+                    <button id="AddToCartButton" class="btn btn-success mb-5 w-100">
                         <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="cart-arrow-down" height=15
                             class="svg-inline--fa fa-cart-arrow-down fa-w-18" role="img" xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 576 512">

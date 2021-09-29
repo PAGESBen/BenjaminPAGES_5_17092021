@@ -1,4 +1,6 @@
 /*
+ETAPES :
+
 1.Récuperer l'id du produit dans l'url de la page
 
 2.faire la requette sur l'API sur l'objet concerné : 
@@ -38,7 +40,7 @@ async function run() {
     description.textContent = product.description
 
     const price = document.getElementById("price")
-    price.textContent = product.price
+    price.textContent = product.price /100
 
     //Boucle for pour le menu déroulant des couleurs
     for (i=0; i < product.colors.length; i++){
@@ -60,7 +62,3 @@ async function run() {
 }
 
 run()
-
-
-
-

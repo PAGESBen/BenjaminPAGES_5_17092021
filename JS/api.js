@@ -64,7 +64,7 @@ async function run() {
         productImg.setAttribute("src", peluche.imageUrl)
         name.textContent = peluche.name
         description.textContent = peluche.description
-        price.textContent = "Prix : " + peluche.price + " €"
+        price.textContent = "Prix : " + peluche.price / 100 + " €"
         button.textContent = "Voir l'article"
 
         //On crée l'url qui contiendra l'ID de l'objet pour la page product
