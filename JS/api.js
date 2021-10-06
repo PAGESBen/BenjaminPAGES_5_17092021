@@ -15,11 +15,21 @@
     -nomElementParent.appendChild(elementEnfant)
 */
 
+//fonction d'appel de l'API avec sécurité si la reponse n'est pas true
+let get = async () => {
+	let response = await fetch("http://localhost:3000/api/teddies/")
+	if( response.ok ) {
+		return response.json()
+	}
+	else {
+		throw "Erreur sur la requête"
+	}
+}
 
 //déclaration de la fonction 
+
 async function run() {
-    let get = await fetch("http://localhost:3000/api/teddies/")
-    let products = await get.json()
+    let products = await get('/')
     for (let peluche of products) {
 
         console.log(peluche)

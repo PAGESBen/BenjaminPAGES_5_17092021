@@ -21,11 +21,22 @@ const queryString_url = window.location.search
 const urlSearchParams = new URLSearchParams(queryString_url)
 const id = urlSearchParams.get("id")
 
+//fonction d'appel de l'API avec sécurité si la reponse n'est pas true
+let get = async () => {
+	let response = await fetch(`http://localhost:3000/api/teddies/${id}`)
+	if( response.ok ) {
+		return response.json()
+	}
+	else {
+		throw "Erreur sur la requête"
+	}
+}
+
+
 // 2. Récuperation de l'objet ayant l'id
 
 async function run() {
-    let get = await fetch("http://localhost:3000/api/teddies/" + id)
-    let product = await get.json()
+    let product = await get()
     console.log(product)
 
     //3. Recuperer et compléter les elements à compléter dans le DOM :
