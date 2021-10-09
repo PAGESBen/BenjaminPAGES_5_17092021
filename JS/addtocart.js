@@ -37,8 +37,25 @@ addToCartButton.addEventListener("click", function addToCart(e) {
         let cart = JSON.parse(localStorage.getItem("productsListInCart")) // On défini le panier dans le local storage 
 
         if (cart) { //Si il y a déjà quelque chose dans le panier
-            cart.push(productToAddinCart) //Ajoute le produit dans la liste
-            localStorage.setItem("productsListInCart", JSON.stringify(cart)) // met à jour le local storage
+
+            let productAlreadyInCart = false // variable qui m'indique si le produit est déjà dans le panier ou non
+
+            for (let i = 0; i < cart.length; i++) { // pour chaque produit dans le panier
+                if (cart[i].ref == productToAddinCart.ref && cart[i].color == productToAddinCart.color) { //si la reference et la couleur est la même 
+                    cart[i].quantity = cart[i].quantity + 1 // ajoute une quantité
+                    productAlreadyInCart = true //préviens que le produit était déjà dans le panier
+                } else {
+                    // fais rien
+                }
+            }
+
+            if (productAlreadyInCart) { //si le produit était séjà dans le panier
+                localStorage.setItem("productsListInCart", JSON.stringify(cart)) // met à jour le local storage 
+            } else { // si le produit n'était pas dans le panier 
+                cart.push(productToAddinCart) //Ajoute le produit dans l'array
+                localStorage.setItem("productsListInCart", JSON.stringify(cart)) // met à jour le local storage
+            }
+
         } else { // sinon
             cart = [] //crée un tableau qui contiendra la liste des produits du panier
             cart.push(productToAddinCart) //Ajoute le produit dans la liste

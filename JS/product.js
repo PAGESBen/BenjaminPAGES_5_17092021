@@ -32,7 +32,6 @@ let get = async () => {
 	}
 }
 
-
 // 2. Récuperation de l'objet ayant l'id
 
 async function run() {
@@ -58,7 +57,7 @@ async function run() {
 
         //Creation de l'element option du menu déroulant
         const colorList = document.createElement("option")
-        colorList.setAttribute("value", i + 1)
+        colorList.setAttribute("value", product.colors[i])
 
 
         //Ajout du contenu aux <options>
