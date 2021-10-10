@@ -4,6 +4,9 @@
 3. Si le panier contient quelque chose = additionner les quantités
 */
 
+let cartQuantity = document.getElementById('cartCount')
+
+
 let countCart = () => {
 
     let cart = JSON.parse(localStorage.getItem("productsListInCart"))
@@ -16,6 +19,15 @@ let countCart = () => {
     } else {
         numberOfProductsInCart = 0
     }
+
+    if (numberOfProductsInCart == 0) {
+        cartQuantity.classList.add("d-none")
+    } else {
+        cartQuantity.classList.remove("d-none")
+        cartQuantity.textContent = numberOfProductsInCart
+    }
+
+    console.log(numberOfProductsInCart)
 }
 
 countCart()

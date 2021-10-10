@@ -58,6 +58,8 @@ addToCartButton.addEventListener("click", function addToCart(e) {
             localStorage.setItem("productsListInCart", JSON.stringify(cart)) // envoie dans le local storage
         }
     }
+
+    countCart()
 })
 
 countCart()
