@@ -44,17 +44,13 @@ addToCartButton.addEventListener("click", function addToCart(e) {
                 if (cart[i].ref == productToAddinCart.ref && cart[i].color == productToAddinCart.color) { //si la reference et la couleur est la même 
                     cart[i].quantity = cart[i].quantity + 1 // ajoute une quantité
                     productAlreadyInCart = true //préviens que le produit était déjà dans le panier
-                } else {
-                    // fais rien
                 }
             }
 
-            if (productAlreadyInCart) { //si le produit était séjà dans le panier
-                localStorage.setItem("productsListInCart", JSON.stringify(cart)) // met à jour le local storage 
-            } else { // si le produit n'était pas dans le panier 
-                cart.push(productToAddinCart) //Ajoute le produit dans l'array
-                localStorage.setItem("productsListInCart", JSON.stringify(cart)) // met à jour le local storage
+            if (!productAlreadyInCart) { //si le produit n'est pas dans le panier
+                cart.push(productToAddinCart)
             }
+            localStorage.setItem("productsListInCart", JSON.stringify(cart)) // met à jour le local storage 
 
         } else { // sinon
             cart = [] //crée un tableau qui contiendra la liste des produits du panier
@@ -64,6 +60,7 @@ addToCartButton.addEventListener("click", function addToCart(e) {
     }
 })
 
+countCart()
 
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------*/
         // /*creation de l'alerte*/

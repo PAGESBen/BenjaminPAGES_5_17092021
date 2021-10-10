@@ -15,6 +15,7 @@
     -nomElementParent.appendChild(elementEnfant)
 */
 
+
 //fonction d'appel de l'API avec sécurité si la reponse n'est pas true
 let get = async () => {
 	let response = await fetch("http://localhost:3000/api/teddies/")
@@ -23,7 +24,7 @@ let get = async () => {
 	}
 	else {
 		throw "Erreur sur la requête"
-	}
+    }
 }
 
 //déclaration de la fonction 
@@ -80,6 +81,7 @@ async function run() {
         //On crée l'url qui contiendra l'ID de l'objet pour la page product
         button.setAttribute("href", "./product.html?id=" + peluche._id)
 
+        
         // On va récuperer le contener principal dans le DOM -- let elt = document.getElementById('main');
         let mainContainer = document.getElementById('productslist')
 
@@ -94,7 +96,6 @@ async function run() {
         cardBody.appendChild(price)
     }
 }
-
 
 //Execution de la fonction run 
 run()
