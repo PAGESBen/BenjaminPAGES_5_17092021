@@ -18,7 +18,7 @@ let getCart = async () => {
 
     //creation du tableau et mise en place dans le DOM
     const table = document.createElement('table')
-    document.getElementById('product-table').appendChild(table)
+    document.getElementById('product-table').appendChild(table).classList.add("table", "table-striped")
 
     //Création de l'entête du tableau
     const thead = document.createElement('thead')
