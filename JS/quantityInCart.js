@@ -26,8 +26,6 @@ let countCart = () => {
         cartQuantity.classList.remove("d-none")
         cartQuantity.textContent = numberOfProductsInCart
     }
-
-    console.log(numberOfProductsInCart)
 }
 
 countCart()
