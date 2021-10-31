@@ -42,6 +42,7 @@ async function run() {
 
     const productImg = document.getElementById("productImg")
     productImg.setAttribute("src", product.imageUrl)
+    productImg.setAttribute("alt", `photo du produit ${product.name}`)
 
     const productName = document.getElementById("name")
     productName.textContent = product.name

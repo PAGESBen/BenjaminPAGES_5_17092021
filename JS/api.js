@@ -48,6 +48,7 @@ async function run() {
         const productImg = document.createElement("img")
         // .card-img-top
         productImg.classList.add("card-img-top")
+        productImg.setAttribute("alt", `photo du produit ${peluche.name}`)
 
         const cardBody = document.createElement("div")
         // .card-body
@@ -73,6 +74,7 @@ async function run() {
         //placer les variables dans les elements -- elt.innerHTML = "code + variable";
 
         productImg.setAttribute("src", peluche.imageUrl)
+
         name.textContent = peluche.name
         description.textContent = peluche.description
         price.textContent = "Prix : " + peluche.price / 100 + " €"
