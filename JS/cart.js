@@ -15,6 +15,7 @@ let totalPrice = 0
 let getCart = async () => {
 
     let products = {}
+    let total = 0
 
     //creation du tableau et mise en place dans le DOM
     const table = document.createElement('table')
