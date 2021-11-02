@@ -236,23 +236,29 @@ addToCartButton.addEventListener("click", function addToCart(e) {
 
 /*-------------------------------------------------*/
 
-let runCart = () => {
+async function runCart() {
 
     let products = {}
     let total = 0
-    let cartContainer = docuemnt.getElementById('product-table')
+    let cartContainer = document.getElementById('product-table')
 
     for (let item of cart ) {
         if (products[item.ref] === undefined) {
-            let product = get(item.ref)
+            let product = await get(`/${item.ref}`)
+            products[item.ref] = product
         }
 
+        console.log(products[item.ref])
+    
     const row = generateDiv('row')
     cartContainer.appendChild(row)
 
-    const colImg = generateDiv('col-md-1')
+    const colImg = generateDiv('col-md-1 my-2')
+    cartContainer.appendChild(colImg)
+
+    const img = generateImg( 'img-fluid', `photo du produit ${products[item.ref].name}`, products[item.ref].imageUrl)
+    colImg.appendChild(img)
 
 
-
-
+    }
 }
