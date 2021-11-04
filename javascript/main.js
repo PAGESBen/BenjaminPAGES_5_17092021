@@ -55,12 +55,33 @@ const generateP = (className = '', content) => {
     return p
 }
 
-generateLink = (className, href, label) => {
+const generateLink = (className, href, label) => {
     let a = document.createElement('a')
     a.className = className
     a.href = href
     a.textContent = label
     return a
+}
+
+const generateStrong = (content) => {
+    let strong = document.createElement('strong')
+    strong.innerText = content
+    return strong
+}
+
+const generateSmall = (content) => {
+    let small = document.createElement('small')
+    small.innerText = content
+    return small
+}
+
+generateBr = () => {
+    let br = document.createElement('br')
+    return br
+}
+
+generateText = (content) => {
+    return document.createTextNode(content)
 }
 
 /*---------------------------------------------------------------------------------------*/
@@ -248,17 +269,32 @@ async function runCart() {
             products[item.ref] = product
         }
 
-        console.log(products[item.ref])
     
     const row = generateDiv('row')
     cartContainer.appendChild(row)
 
     const colImg = generateDiv('col-md-1 my-2')
-    cartContainer.appendChild(colImg)
+    row.appendChild(colImg)
 
     const img = generateImg( 'img-fluid', `photo du produit ${products[item.ref].name}`, products[item.ref].imageUrl)
     colImg.appendChild(img)
 
+    const colTitle = generateDiv('col-md-5')
+    row.appendChild(colTitle)
+    colTitle.appendChild(generateStrong(`${products[item.ref].name} - (${item.color}) `))
+    colTitle.appendChild(generateBr())
+    colTitle.appendChild(generateSmall(item.ref))
 
+    const colPrice = generateDiv('col-md-2')
+    colPrice.appendChild(generateText(products[item.ref].price))
+    row.appendChild(colPrice)
+
+    const colQuantity = generateDiv('col-md-2')
+    colQuantity.appendChild(generateText(item.quantity))
+    row.appendChild(colQuantity)
+
+    const colTotal = generateDiv('col-md-2')
+    colTotal.appendChild(generateText(products[item.ref].price * item.quantity))
+    row.appendChild(colTotal)
     }
 }
