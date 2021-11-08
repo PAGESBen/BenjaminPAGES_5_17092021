@@ -370,4 +370,72 @@ async function runCart() {
 
 let form = document.getElementById("cartForm")
 
-console.log(form.clientName)
+// ************FONCTION DE CONTROLE DE L'EMAIL******************
+
+const validEmail = (mail) => {
+    let emailRegex = new RegExp(
+        '^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9._-]+[.]{1}[a-z]{2,10}$', 
+        'g'
+        )
+    let small = mail.nextElementSibling
+
+    if(! emailRegex.test(mail.value)) {
+        small.innerText = 'adresse non valide'
+        small.classList = 'text-danger'
+    } else {
+        small.innerText = ''
+    }
+}
+
+// *******************FONCTION DE CONTROLE DES NOMS**********************
+
+const validName = (string) => {
+
+    let nameRegex = new RegExp(
+        '^[a-zA-z]{2,20}$', 
+        'g'
+    )
+    
+    let small = string.nextElementSibling
+
+    if(! nameRegex.test(string.value)) {
+        small.innerText = 'Il semble y avoir une erreur'
+        small.classList = 'text-danger'
+    } else {
+        small.innerText = ''
+    }
+}
+
+const validPostalCode = (code) => {
+    let postalRegex = new RegExp (
+        '^[0-9]{1,6}$', 
+        'g'
+    )
+    
+    let small = string.nextElementSibling
+
+    if (! postalRegex.test(code.value)) {
+        small.innerText = 'Merci de renseigner un code postal Valide'
+        small.classList = 'text-danger'
+    } else {
+        small.innerText = ''
+    }
+}
+
+// *************Lancement des fonctions de controles************
+
+form.mail.addEventListener('change', function() {
+    validEmail(this)
+})
+
+form.clientName.addEventListener('change', function() {
+    validName(this)
+})
+
+form.clientsurname.addEventListener('change', function() {
+    validName(this)
+})
+
+form.cityCode.addEventListener('change', function() {
+    validPostalCode(this)
+})
