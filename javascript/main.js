@@ -24,6 +24,11 @@ let get = async (route) => {
     }
 }
 
+//Variable du panier
+
+let cartQuantity = document.getElementById('cartCount')
+let cart = JSON.parse(localStorage.getItem("productsListInCart"))
+
 // fonctions pour la création d'éléments dans le DOM
 
 const generateDiv = (className = '') => {
@@ -74,18 +79,64 @@ const generateSmall = (content) => {
     return small
 }
 
-generateBr = () => {
+const generateBr = () => {
     let br = document.createElement('br')
     return br
 }
 
-generateText = (content) => {
+const generateText = (content) => {
     return document.createTextNode(content)
 }
 
-generatePrice = (price) => {
+const generatePrice = (price) => {
     return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(price)
 }
+
+const generateSelect = (options = {}, defaultValue = null) => {
+    let select = document.createElement('select')
+
+    for (let value in options){
+        let option = document.createElement('option')
+        option.value = value
+        option.innerText = options[value]
+        select.appendChild(option)
+    }
+
+    if (defaultValue !== null) {
+        select.value = defaultValue
+    }
+
+    return select
+
+}
+
+/*FONCTIONS POUR MANIPULER LE PANIER*/
+
+let updateCart = async (productId, color, qty) => {
+
+    let found = false
+
+    for(item of cart) {
+        if(item.ref === productId && item.color === color) {
+            item.quantity = qty
+            found = true
+            break
+        }
+    }
+
+    if( ! found ) {
+        cart.push( {
+            ref : productId,
+            color : item.color,
+            quantity : qty
+        })
+    }
+
+    localStorage.setItem("productsListInCart", JSON.stringify(cart)) // met à jour le local storage 
+
+
+}
+
 
 /*---------------------------------------------------------------------------------------*/
 //déclaration de la fonction runIndex de la page Index
@@ -230,10 +281,7 @@ async function runProduct() {
 /*------------------------------------------------------------------------------------------------------*/
 // compte du panier 
 
-let cartQuantity = document.getElementById('cartCount')
-let cart = JSON.parse(localStorage.getItem("productsListInCart"))
-
-let countCart = () => {
+let countCart = async () => {
 
     let numberOfProductsInCart = 0
 
@@ -289,9 +337,22 @@ async function runCart() {
         colPrice.appendChild(generateText(generatePrice(products[item.ref].price/100)))
         row.appendChild(colPrice)
 
+
+        //Menu déroulant avec les quantités
+        let options = {}
+        for (let i = 1; i<=99; i++) {
+            options[i] = i
+        }
+        let select = generateSelect(options, item.quantity)
         const colQuantity = generateDiv('col-md-2')
-        colQuantity.appendChild(generateText(item.quantity))
+        colQuantity.appendChild(select)
         row.appendChild(colQuantity)
+
+        select.addEventListener('change', () => {
+            updateCart(item.ref, item.color, Number(select.value))
+            countCart()
+        })
+
 
         const colTotal = generateDiv('col-md-2')
         colTotal.appendChild(generateText(generatePrice((products[item.ref].price * item.quantity)/100)))
@@ -304,3 +365,9 @@ async function runCart() {
     totalCart.appendChild(generateText(`Montant total = ${generatePrice(total)}`))
     cartContainer.appendChild(totalCart)
 }
+
+/* Controle du Formulaire grace à regex*/
+
+let form = document.getElementById("cartForm")
+
+console.log(form.clientName)
