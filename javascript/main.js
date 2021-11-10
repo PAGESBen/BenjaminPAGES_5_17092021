@@ -140,12 +140,10 @@ let updateCart = async (productId, color, qty) => {
 
     localStorage.setItem("productsListInCart", JSON.stringify(cart)) // met à jour le local storage 
 
-
 }
 
 
 let removeItemInCart = (productId, color) => {
-    let found = false
     let i=0
 
     for(item of cart) {
@@ -323,20 +321,20 @@ let countCart = async () => {
 
 
 /*-------------------------------------------------*/
+let cacheProducts = {}
 
 async function runCart() {
 
-    let products = {}
     let total = 0
     let cartContainer = document.getElementById('product-table')
 
     for (let item of cart ) {
-        if (products[item.ref] === undefined) {
+        if (cacheProducts[item.ref] === undefined) {
             let product = await get(`/${item.ref}`)
-            products[item.ref] = product
+            cacheProducts[item.ref] = product
         }
 
-        let product = products[item.ref]
+        let product = cacheProducts[item.ref]
 
         const row = generateDiv('row')
         cartContainer.appendChild(row)
@@ -344,17 +342,17 @@ async function runCart() {
         const colImg = generateDiv('col-md-1 my-2')
         row.appendChild(colImg)
 
-        const img = generateImg( 'img-fluid', `photo du produit ${product.name}`, products[item.ref].imageUrl)
+        const img = generateImg( 'img-fluid', `photo du produit ${product.name}`, cacheProducts[item.ref].imageUrl)
         colImg.appendChild(img)
 
         const colTitle = generateDiv('col-md-5')
         row.appendChild(colTitle)
-        colTitle.appendChild(generateStrong(`${products[item.ref].name} - (${item.color}) `))
+        colTitle.appendChild(generateStrong(`${cacheProducts[item.ref].name} - (${item.color}) `))
         colTitle.appendChild(generateBr())
         colTitle.appendChild(generateSmall(item.ref))
 
         const colPrice = generateDiv('col-md-2')
-        colPrice.appendChild(generateText(generatePrice(products[item.ref].price/100)))
+        colPrice.appendChild(generateText(generatePrice(cacheProducts[item.ref].price/100)))
         row.appendChild(colPrice)
 
 
@@ -389,10 +387,10 @@ async function runCart() {
         })
 
         const colTotal = generateDiv('col-md-2')
-        colTotal.appendChild(generateText(generatePrice((products[item.ref].price * item.quantity)/100)))
+        colTotal.appendChild(generateText(generatePrice((cacheProducts[item.ref].price * item.quantity)/100)))
         row.appendChild(colTotal)
 
-        total = total + (products[item.ref].price * item.quantity/100)
+        total = total + (cacheProducts[item.ref].price * item.quantity/100)
     }
 
     const totalCart = generateDiv('row')
@@ -414,8 +412,8 @@ let form = document.getElementById("cartForm")
 
 const validEmail = (mail) => {
     let emailRegex = new RegExp(
-        '^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9._-]+[.]{1}[a-z]{2,10}$', 
-        'g'
+        '^[a-z0-9.-_]+[@]{1}[a-z0-9._-]+[.]{1}[a-z]{2,}$', 
+        'gi'
         )
     let small = mail.nextElementSibling
 
@@ -432,8 +430,8 @@ const validEmail = (mail) => {
 const validName = (string) => {
 
     let nameRegex = new RegExp(
-        '^[a-zA-z]{2,20}$', 
-        'g'
+        '^[a-zéèêïë -]{2,}$', 
+        'gi'
     )
     
     let small = string.nextElementSibling
@@ -491,7 +489,16 @@ function send(e) {
         firstName : form.firstName.value, 
         lastName : form.lastName.value,
         adress : form.adress.value,
+        mail : form.adress.mail,
         city : form.city.value
+    }
+
+    let command = []
+
+    for(let item of cart) {
+        for (let i = 0; i < item.quantity; i++) {
+            command.push(item.ref)
+        }
     }
 
     e.preventDefault();
@@ -501,7 +508,7 @@ function send(e) {
         'Accept': 'application/json', 
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({value: document.getElementById("value").value})
+      body: {contact, command}
     })
     .then(function(res) {
       if (res.ok) {
@@ -518,10 +525,3 @@ function send(e) {
 //   document
 //     .getElementById("form")
 //     .addEventListener("submit", send);
-
-    let contact = {
-        firstName : form.firstName.value, 
-        lastName : form.lastName.value,
-        adress : form.adress.value,
-        city : form.city.value
-    }
