@@ -101,14 +101,20 @@ const generateSelect = (options = {}, defaultValue = null) => {
         option.innerText = options[value]
         select.appendChild(option)
     }
-
     if (defaultValue !== null) {
         select.value = defaultValue
     }
-
     return select
-
 }
+
+const generateButton = (className = '', content) => {
+    let button = document.createElement('button')
+    button.className = className
+    button.innerHTML = content
+
+    return button
+}
+
 
 /*FONCTIONS POUR MANIPULER LE PANIER*/
 
@@ -137,6 +143,20 @@ let updateCart = async (productId, color, qty) => {
 
 }
 
+
+let removeItemInCart = (productId, color) => {
+    let found = false
+    let i=0
+
+    for(item of cart) {
+        i++
+        if(item.ref === productId && item.color === color) {
+            cart.splice(i-1, 1)
+            break
+        }
+    }
+    localStorage.setItem("productsListInCart", JSON.stringify(cart)) // met à jour le local storage 
+}
 
 /*---------------------------------------------------------------------------------------*/
 //déclaration de la fonction runIndex de la page Index
@@ -351,8 +371,22 @@ async function runCart() {
         select.addEventListener('change', () => {
             updateCart(item.ref, item.color, Number(select.value))
             countCart()
+            refreshCart()
         })
 
+        const removeProduct = generateButton(
+            "btn btn-outline-danger mx-1",
+            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+            </svg>`
+            )
+        colQuantity.appendChild(removeProduct)
+        
+        removeProduct.addEventListener("click", () => {
+            removeItemInCart(item.ref, item.color)
+            countCart()
+            refreshCart()
+        })
 
         const colTotal = generateDiv('col-md-2')
         colTotal.appendChild(generateText(generatePrice((products[item.ref].price * item.quantity)/100)))
@@ -364,6 +398,12 @@ async function runCart() {
     const totalCart = generateDiv('row')
     totalCart.appendChild(generateText(`Montant total = ${generatePrice(total)}`))
     cartContainer.appendChild(totalCart)
+}
+
+const refreshCart = () => {
+    let cartContainer = document.getElementById('product-table')
+    cartContainer.innerHTML = ''
+    runCart()
 }
 
 /* Controle du Formulaire grace à regex*/
@@ -424,18 +464,20 @@ const validPostalCode = (code) => {
 
 // *************Lancement des fonctions de controles************
 
-form.mail.addEventListener('change', function() {
-    validEmail(this)
-})
+const validForm = () => {
+    form.email.addEventListener('change', function () {
+        validEmail(this)
+    })
 
-form.clientName.addEventListener('change', function() {
-    validName(this)
-})
+    form.firstName.addEventListener('change', function () {
+        validName(this)
+    })
 
-form.clientsurname.addEventListener('change', function() {
-    validName(this)
-})
+    form.lastName.addEventListener('change', function () {
+        validName(this)
+    })
 
-form.cityCode.addEventListener('change', function() {
-    validPostalCode(this)
-})
+    form.cityCode.addEventListener('change', function () {
+        validPostalCode(this)
+    })
+}
