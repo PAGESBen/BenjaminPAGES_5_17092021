@@ -481,3 +481,47 @@ const validForm = () => {
         validPostalCode(this)
     })
 }
+
+// ******************fetch d'envoi*******************************
+ 
+
+function send(e) {
+
+    let contact = {
+        firstName : form.firstName.value, 
+        lastName : form.lastName.value,
+        adress : form.adress.value,
+        city : form.city.value
+    }
+
+    e.preventDefault();
+    fetch( url +"/order", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json', 
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({value: document.getElementById("value").value})
+    })
+    .then(function(res) {
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    .then(function(value) {
+        document
+          .getElementById("result")
+          .innerText = value.postData.text;
+    });
+  }
+  
+//   document
+//     .getElementById("form")
+//     .addEventListener("submit", send);
+
+    let contact = {
+        firstName : form.firstName.value, 
+        lastName : form.lastName.value,
+        adress : form.adress.value,
+        city : form.city.value
+    }
