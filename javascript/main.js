@@ -115,6 +115,12 @@ const generateButton = (className = '', content) => {
     return button
 }
 
+const generateIcon = (className) => {
+    let icon = document.createElement('i')
+    icon.className = className
+    return icon
+}
+
 
 /*FONCTIONS POUR MANIPULER LE PANIER*/
 
@@ -325,77 +331,99 @@ let cacheProducts = {}
 
 async function runCart() {
 
-    let total = 0
-    let cartContainer = document.getElementById('product-table')
+    if (!cart || cart.length === 0) {
 
-    for (let item of cart ) {
-        if (cacheProducts[item.ref] === undefined) {
-            let product = await get(`/${item.ref}`)
-            cacheProducts[item.ref] = product
-        }
+        let main = document.getElementById('main')
+        main.innerHTML = ''
 
-        let product = cacheProducts[item.ref]
+        let row = generateDiv('row my-5')
+        main.appendChild(row)
 
-        const row = generateDiv('row')
-        cartContainer.appendChild(row)
+        let col = generateDiv('col-12 text-center h1')
+        row.appendChild(col)
 
-        const colImg = generateDiv('col-md-1 my-2')
-        row.appendChild(colImg)
+        let icon = generateIcon('bi bi-exclamation-circle-fill')
+        col.appendChild(icon)
 
-        const img = generateImg( 'img-fluid', `photo du produit ${product.name}`, cacheProducts[item.ref].imageUrl)
-        colImg.appendChild(img)
+        col.appendChild(generateBr())
 
-        const colTitle = generateDiv('col-md-5')
-        row.appendChild(colTitle)
-        colTitle.appendChild(generateStrong(`${cacheProducts[item.ref].name} - (${item.color}) `))
-        colTitle.appendChild(generateBr())
-        colTitle.appendChild(generateSmall(item.ref))
+        let message = generateText('Votre panier est vide')
+        col.appendChild(message)
 
-        const colPrice = generateDiv('col-md-2')
-        colPrice.appendChild(generateText(generatePrice(cacheProducts[item.ref].price/100)))
-        row.appendChild(colPrice)
+    } else {
+
+        let total = 0
+        let cartContainer = document.getElementById('product-table')
+
+        for (let item of cart) {
+            if (cacheProducts[item.ref] === undefined) {
+                let product = await get(`/${item.ref}`)
+                cacheProducts[item.ref] = product
+            }
+
+            let product = cacheProducts[item.ref]
+
+            const row = generateDiv('row')
+            cartContainer.appendChild(row)
+
+            const colImg = generateDiv('col-md-1 my-2')
+            row.appendChild(colImg)
+
+            const img = generateImg('img-fluid', `photo du produit ${product.name}`, cacheProducts[item.ref].imageUrl)
+            colImg.appendChild(img)
+
+            const colTitle = generateDiv('col-md-5')
+            row.appendChild(colTitle)
+            colTitle.appendChild(generateStrong(`${cacheProducts[item.ref].name} - (${item.color}) `))
+            colTitle.appendChild(generateBr())
+            colTitle.appendChild(generateSmall(item.ref))
+
+            const colPrice = generateDiv('col-md-2')
+            colPrice.appendChild(generateText(generatePrice(cacheProducts[item.ref].price / 100)))
+            row.appendChild(colPrice)
 
 
-        //Menu déroulant avec les quantités
-        let options = {}
-        for (let i = 1; i<=99; i++) {
-            options[i] = i
-        }
-        let select = generateSelect(options, item.quantity)
-        const colQuantity = generateDiv('col-md-2')
-        colQuantity.appendChild(select)
-        row.appendChild(colQuantity)
+            //Menu déroulant avec les quantités
+            let options = {}
+            for (let i = 1; i <= 99; i++) {
+                options[i] = i
+            }
+            let select = generateSelect(options, item.quantity)
+            const colQuantity = generateDiv('col-md-2')
+            colQuantity.appendChild(select)
+            row.appendChild(colQuantity)
 
-        select.addEventListener('change', () => {
-            updateCart(item.ref, item.color, Number(select.value))
-            countCart()
-            refreshCart()
-        })
+            select.addEventListener('change', () => {
+                updateCart(item.ref, item.color, Number(select.value))
+                countCart()
+                refreshCart()
+            })
 
-        const removeProduct = generateButton(
-            "btn btn-outline-danger mx-1",
-            `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+            const removeProduct = generateButton(
+                "btn btn-outline-danger mx-1",
+                `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
             <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
             </svg>`
             )
-        colQuantity.appendChild(removeProduct)
-        
-        removeProduct.addEventListener("click", () => {
-            removeItemInCart(item.ref, item.color)
-            countCart()
-            refreshCart()
-        })
+            colQuantity.appendChild(removeProduct)
 
-        const colTotal = generateDiv('col-md-2')
-        colTotal.appendChild(generateText(generatePrice((cacheProducts[item.ref].price * item.quantity)/100)))
-        row.appendChild(colTotal)
+            removeProduct.addEventListener("click", () => {
+                removeItemInCart(item.ref, item.color)
+                countCart()
+                refreshCart()
+            })
 
-        total = total + (cacheProducts[item.ref].price * item.quantity/100)
+            const colTotal = generateDiv('col-md-2')
+            colTotal.appendChild(generateText(generatePrice((cacheProducts[item.ref].price * item.quantity) / 100)))
+            row.appendChild(colTotal)
+
+            total = total + (cacheProducts[item.ref].price * item.quantity / 100)
+        }
+
+        const totalCart = generateDiv('row')
+        totalCart.appendChild(generateText(`Montant total = ${generatePrice(total)}`))
+        cartContainer.appendChild(totalCart)
     }
-
-    const totalCart = generateDiv('row')
-    totalCart.appendChild(generateText(`Montant total = ${generatePrice(total)}`))
-    cartContainer.appendChild(totalCart)
 }
 
 const refreshCart = () => {
@@ -406,78 +434,68 @@ const refreshCart = () => {
 
 /* Controle du Formulaire grace à regex*/
 
+const validField = (element, regex, errorMessage) => {
+
+    let value = element.value.trim()
+    let small = element.nextElementSibling
+
+    if( !regex.test(value) ) {
+        small.innerText = errorMessage
+        small.classList = 'text-danger'
+        return false
+    } else {
+        small.innerHTML = ''
+        return true
+    }
+}
+
+const regex = {
+    mail : new RegExp('^[a-z0-9.-_]+[@]{1}[a-z0-9._-]+[.]{1}[a-z]{2,}$','gi'), 
+    name : new RegExp('^[a-zéèêïëà -]{2,}$','gi'),
+    zipCode : new RegExp ('^[0-9]{1,6}$', 'g'),
+    address : new RegExp ('^[a-z0-9éèêëïà, -]{3,}$', 'gi')
+}
+
 let form = document.getElementById("cartForm")
 
-// ************FONCTION DE CONTROLE DE L'EMAIL******************
-
-const validEmail = (mail) => {
-    let emailRegex = new RegExp(
-        '^[a-z0-9.-_]+[@]{1}[a-z0-9._-]+[.]{1}[a-z]{2,}$', 
-        'gi'
-        )
-    let small = mail.nextElementSibling
-
-    if(! emailRegex.test(mail.value)) {
-        small.innerText = 'adresse non valide'
-        small.classList = 'text-danger'
-    } else {
-        small.innerText = ''
-    }
-}
-
-// *******************FONCTION DE CONTROLE DES NOMS**********************
-
-const validName = (string) => {
-
-    let nameRegex = new RegExp(
-        '^[a-zéèêïë -]{2,}$', 
-        'gi'
-    )
-    
-    let small = string.nextElementSibling
-
-    if(! nameRegex.test(string.value)) {
-        small.innerText = 'Il semble y avoir une erreur'
-        small.classList = 'text-danger'
-    } else {
-        small.innerText = ''
-    }
-}
-
-const validPostalCode = (code) => {
-    let postalRegex = new RegExp (
-        '^[0-9]{1,6}$', 
-        'g'
-    )
-    
-    let small = string.nextElementSibling
-
-    if (! postalRegex.test(code.value)) {
-        small.innerText = 'Merci de renseigner un code postal Valide'
-        small.classList = 'text-danger'
-    } else {
-        small.innerText = ''
-    }
-}
-
-// *************Lancement des fonctions de controles************
+let fields = [{
+    element : form.firstName, 
+    expression : regex.name,
+    errorMessage : 'Le prénom n\'est pas correct'
+}, 
+{
+    element : form.lastName, 
+    expression : regex.name,
+    errorMessage : 'Le nom n\'est pas correct'
+}, 
+{
+    element : form.mail, 
+    expression : regex.mail,
+    errorMessage : 'Adresse mail non valide'
+}, 
+{
+    element : form.address, 
+    expression : regex.address,
+    errorMessage : 'L\adresse n\'est pas valide'
+}, 
+{
+    element : form.zipCode, 
+    expression : regex.zipCode,
+    errorMessage : 'Code postal non valide'
+}, 
+{
+    element : form.city, 
+    expression : regex.name,
+    errorMessage : 'La ville n\'est pas valide'
+}]
 
 const validForm = () => {
-    form.email.addEventListener('change', function () {
-        validEmail(this)
-    })
-
-    form.firstName.addEventListener('change', function () {
-        validName(this)
-    })
-
-    form.lastName.addEventListener('change', function () {
-        validName(this)
-    })
-
-    form.cityCode.addEventListener('change', function () {
-        validPostalCode(this)
-    })
+    for (let field of fields) {
+        console.log(field.element)
+        field.element.addEventListener('change', function() {
+            validField(field.element, field.expression, field.errorMessage)
+        })
+    }
 }
 
 // ******************fetch d'envoi*******************************
@@ -508,20 +526,27 @@ function send(e) {
         'Accept': 'application/json', 
         'Content-Type': 'application/json'
       },
-      body: {contact, command}
+      
+      body: {
+          contact : contact, 
+          products : command
+        }
+
     })
     .then(function(res) {
       if (res.ok) {
         return res.json();
       }
     })
-    .then(function(value) {
-        document
-          .getElementById("result")
-          .innerText = value.postData.text;
-    });
+    // .then(function(value) {
+    //     document
+    //       .getElementById("result")
+    //       .innerText = value.postData.text;
+    // });
   }
   
-//   document
-//     .getElementById("form")
-//     .addEventListener("submit", send);
+  function submitCommand() {
+  document
+    .getElementById("form")
+    .addEventListener("submit", send);
+}
