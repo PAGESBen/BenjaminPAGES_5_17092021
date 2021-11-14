@@ -434,12 +434,12 @@ const refreshCart = () => {
 
 /* Controle du Formulaire grace à regex*/
 
-const validField = (element, regex, errorMessage) => {
+const validField = (element, expression, errorMessage) => {
 
     let value = element.value.trim()
     let small = element.nextElementSibling
 
-    if( !regex.test(value) ) {
+    if( !expression.test(value) ) {
         small.innerText = errorMessage
         small.classList = 'text-danger'
         return false
@@ -450,13 +450,14 @@ const validField = (element, regex, errorMessage) => {
 }
 
 const regex = {
-    mail : new RegExp('^[a-z0-9.-_]+[@]{1}[a-z0-9._-]+[.]{1}[a-z]{2,}$','gi'), 
-    name : new RegExp('^[a-zéèêïëà -]{2,}$','gi'),
-    zipCode : new RegExp ('^[0-9]{1,6}$', 'g'),
-    address : new RegExp ('^[a-z0-9éèêëïà, -]{3,}$', 'gi')
+    mail : /^[a-z0-9.-_]+[@]{1}[a-z0-9.-_]+[.]{1}[a-z]{2,}$/gi, 
+    name : /^[a-zéèêïëà -]{2,}$/gi,
+    zipCode : /^[0-9]{1,6}$/g,
+    address : /^[a-z0-9éèêëïà, -]{3,}$/gi
 }
 
-let form = document.getElementById("cartForm")
+
+let form = document.getElementById("form")
 
 let fields = [{
     element : form.firstName, 
@@ -476,7 +477,7 @@ let fields = [{
 {
     element : form.address, 
     expression : regex.address,
-    errorMessage : 'L\adresse n\'est pas valide'
+    errorMessage : 'L\'adresse n\'est pas valide'
 }, 
 {
     element : form.zipCode, 
@@ -489,9 +490,11 @@ let fields = [{
     errorMessage : 'La ville n\'est pas valide'
 }]
 
+for (let field of fields) { console.log(field.expression)}
+
 const validForm = () => {
     for (let field of fields) {
-        console.log(field.element)
+        console.log(field.element, field.expression, field.errorMessage)
         field.element.addEventListener('change', function() {
             validField(field.element, field.expression, field.errorMessage)
         })
