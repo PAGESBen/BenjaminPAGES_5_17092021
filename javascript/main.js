@@ -452,10 +452,9 @@ const validField = (element, expression, errorMessage) => {
 const regex = {
     mail : /^[a-z0-9.-_]+[@]{1}[a-z0-9.-_]+[.]{1}[a-z]{2,}$/i, 
     name : /^[a-zéèêïëà -]{2,}$/i,
-    zipCode : /^[0-9]{1,6}$/,
+    zipCode : /^[/d]{1,6}$/,
     address : /^[a-z0-9éèêëïà, -]{3,}$/i
 }
-
 
 const validForm = () => {
 
@@ -509,43 +508,43 @@ const validForm = () => {
 
 // ******************fetch d'envoi*******************************
  
-// const send = async (data) => {
+const send = async (data) => {
 
-//     let response = await fetch( url +"/order", {
-//         method : 'POST', 
-//         headers : {
-//             'Content-Type': 'application/json'     
-//         }, 
-//         body: JSON.stringify(data)
-//     })
-// }
+    let response = await fetch( url +"/order", {
+        method : 'POST', 
+        headers : {
+            'Content-Type': 'application/json'     
+        }, 
+        body: JSON.stringify(data)
+    })
+}
 
-// const submit = async () => {
-//     document.getElementById('submitCommand').addEventListener('click', (e){
+const submit = async () => {
+    document.getElementById('submitCommand').addEventListener('click', (e) => {
 
-//         let sender = {
-//             firstName: form.firstName.value,
-//             lastName: form.lastName.value,
-//             address: form.address.value,
-//             mail: form.mail.value,
-//             city: form.city.value
-//         }
+        let sender = {
+            firstName: form.firstName.value,
+            lastName: form.lastName.value,
+            address: form.address.value,
+            mail: form.mail.value,
+            city: form.city.value
+        }
 
-//         let products = []
+        let products = []
 
-//         for (let item of cart) {
-//             for (let i = 0; i < item.quantity; i++) {
-//                 command.push(item.ref)
-//             }
-//         }
+        for (let item of cart) {
+            for (let i = 0; i < item.quantity; i++) {
+                command.push(item.ref)
+            }
+        }
 
-//         send({
-//             contact: sender,
-//             command: products
-//         })
-//     })
+        send({
+            contact: sender,
+            command: products
+        })
+    })
 
-// }
+}
 
 
 // *****************************************************************
