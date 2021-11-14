@@ -450,106 +450,151 @@ const validField = (element, expression, errorMessage) => {
 }
 
 const regex = {
-    mail : /^[a-z0-9.-_]+[@]{1}[a-z0-9.-_]+[.]{1}[a-z]{2,}$/gi, 
-    name : /^[a-zéèêïëà -]{2,}$/gi,
-    zipCode : /^[0-9]{1,6}$/g,
-    address : /^[a-z0-9éèêëïà, -]{3,}$/gi
+    mail : /^[a-z0-9.-_]+[@]{1}[a-z0-9.-_]+[.]{1}[a-z]{2,}$/i, 
+    name : /^[a-zéèêïëà -]{2,}$/i,
+    zipCode : /^[0-9]{1,6}$/,
+    address : /^[a-z0-9éèêëïà, -]{3,}$/i
 }
 
-
-let form = document.getElementById("form")
-
-let fields = [{
-    element : form.firstName, 
-    expression : regex.name,
-    errorMessage : 'Le prénom n\'est pas correct'
-}, 
-{
-    element : form.lastName, 
-    expression : regex.name,
-    errorMessage : 'Le nom n\'est pas correct'
-}, 
-{
-    element : form.mail, 
-    expression : regex.mail,
-    errorMessage : 'Adresse mail non valide'
-}, 
-{
-    element : form.address, 
-    expression : regex.address,
-    errorMessage : 'L\'adresse n\'est pas valide'
-}, 
-{
-    element : form.zipCode, 
-    expression : regex.zipCode,
-    errorMessage : 'Code postal non valide'
-}, 
-{
-    element : form.city, 
-    expression : regex.name,
-    errorMessage : 'La ville n\'est pas valide'
-}]
-
-for (let field of fields) { console.log(field.expression)}
 
 const validForm = () => {
+
+    let form = document.getElementById("form")
+
+    let fields = [{
+        element : form.firstName, 
+        expression : regex.name,
+        errorMessage : 'Le prénom n\'est pas correct'
+    }, 
+    {
+        element : form.lastName, 
+        expression : regex.name,
+        errorMessage : 'Le nom n\'est pas correct'
+    }, 
+    {
+        element : form.mail, 
+        expression : regex.mail,
+        errorMessage : 'Adresse mail non valide'
+    }, 
+    {
+        element : form.address, 
+        expression : regex.address,
+        errorMessage : 'L\'adresse n\'est pas valide'
+    }, 
+    {
+        element : form.zipCode, 
+        expression : regex.zipCode,
+        errorMessage : 'Code postal non valide'
+    }, 
+    {
+        element : form.city, 
+        expression : regex.name,
+        errorMessage : 'La ville n\'est pas valide'
+    }]
+
+
     for (let field of fields) {
-        console.log(field.element, field.expression, field.errorMessage)
+
+        // console.log(field.element, field.expression, field.errorMessage)
+        
         field.element.addEventListener('change', function() {
-            validField(field.element, field.expression, field.errorMessage)
+            validField(field.element, this, field.errorMessage)
         })
+
     }
 }
+
+
+
 
 // ******************fetch d'envoi*******************************
  
+// const send = async (data) => {
 
-function send(e) {
+//     let response = await fetch( url +"/order", {
+//         method : 'POST', 
+//         headers : {
+//             'Content-Type': 'application/json'     
+//         }, 
+//         body: JSON.stringify(data)
+//     })
+// }
 
-    let contact = {
-        firstName : form.firstName.value, 
-        lastName : form.lastName.value,
-        adress : form.adress.value,
-        mail : form.adress.mail,
-        city : form.city.value
-    }
+// const submit = async () => {
+//     document.getElementById('submitCommand').addEventListener('click', (e){
 
-    let command = []
+//         let sender = {
+//             firstName: form.firstName.value,
+//             lastName: form.lastName.value,
+//             address: form.address.value,
+//             mail: form.mail.value,
+//             city: form.city.value
+//         }
 
-    for(let item of cart) {
-        for (let i = 0; i < item.quantity; i++) {
-            command.push(item.ref)
-        }
-    }
+//         let products = []
 
-    e.preventDefault();
-    fetch( url +"/order", {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json', 
-        'Content-Type': 'application/json'
-      },
+//         for (let item of cart) {
+//             for (let i = 0; i < item.quantity; i++) {
+//                 command.push(item.ref)
+//             }
+//         }
+
+//         send({
+//             contact: sender,
+//             command: products
+//         })
+//     })
+
+// }
+
+
+// *****************************************************************
+
+// async function send(e) {
+
+//     let contact = {
+//         firstName : form.firstName.value, 
+//         lastName : form.lastName.value,
+//         adress : form.adress.value,
+//         mail : form.adress.mail,
+//         city : form.city.value
+//     }
+
+//     let command = []
+
+//     for(let item of cart) {
+//         for (let i = 0; i < item.quantity; i++) {
+//             command.push(item.ref)
+//         }
+//     }
+
+//     fetch( url +"/order", {
+//       method: "POST",
+//       headers: {
+//         'Accept': 'application/json', 
+//         'Content-Type': 'application/json'
+//       },
       
-      body: {
-          contact : contact, 
-          products : command
-        }
+//       body: {
+//           contact : contact, 
+//           products : command
+//         }
 
-    })
-    .then(function(res) {
-      if (res.ok) {
-        return res.json();
-      }
-    })
-    // .then(function(value) {
-    //     document
-    //       .getElementById("result")
-    //       .innerText = value.postData.text;
-    // });
-  }
+//     })
+//     .then(function(res) {
+//       if (res.ok) {
+//         return res.json();
+//       }
+//     })
+//     // .then(function(value) {
+//     //     document
+//     //       .getElementById("result")
+//     //       .innerText = value.postData.text;
+//     // });
+//   }
   
-  function submitCommand() {
-  document
-    .getElementById("form")
-    .addEventListener("submit", send);
-}
+//   function submitCommand() {
+//   document
+//     .getElementById("form")
+//     .addEventListener("submit", send);
+// }
