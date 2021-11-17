@@ -35,3 +35,7 @@ function submit (){
     })
 
 }
+
+function confirmation () {
+    document.getElementById('confirmation')
+}

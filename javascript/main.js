@@ -450,150 +450,118 @@ const validField = (element, expression, errorMessage) => {
 }
 
 const regex = {
-    mail : /^[a-z0-9.-_]+[@]{1}[a-z0-9.-_]+[.]{1}[a-z]{2,}$/i, 
+    mail : /^[a-z0-9.\-_]+[@]{1}[a-z0-9.\-_]+[.]{1}[a-z]{2,}$/i,
     name : /^[a-zéèêïëà -]{2,}$/i,
-    zipCode : /^[/d]{1,6}$/,
+    zipCode : /^[0-9]{1,6}$/,
     address : /^[a-z0-9éèêëïà, -]{3,}$/i
 }
 
-const validForm = () => {
 
-    let form = document.getElementById("form")
-
-    let fields = [{
-        element : form.firstName, 
-        expression : regex.name,
-        errorMessage : 'Le prénom n\'est pas correct'
-    }, 
-    {
-        element : form.lastName, 
-        expression : regex.name,
-        errorMessage : 'Le nom n\'est pas correct'
-    }, 
-    {
-        element : form.mail, 
-        expression : regex.mail,
-        errorMessage : 'Adresse mail non valide'
-    }, 
-    {
-        element : form.address, 
-        expression : regex.address,
-        errorMessage : 'L\'adresse n\'est pas valide'
-    }, 
-    {
-        element : form.zipCode, 
-        expression : regex.zipCode,
-        errorMessage : 'Code postal non valide'
-    }, 
-    {
-        element : form.city, 
-        expression : regex.name,
-        errorMessage : 'La ville n\'est pas valide'
-    }]
-
-
-    for (let field of fields) {
-
-        // console.log(field.element, field.expression, field.errorMessage)
-        
-        field.element.addEventListener('change', function() {
-            validField(field.element, this, field.errorMessage)
-        })
-
-    }
-}
-
-
-
-
-// ******************fetch d'envoi*******************************
- 
 const send = async (data) => {
 
-    let response = await fetch( url +"/order", {
+    let response = await fetch( `${url}/order`, {
         method : 'POST', 
         headers : {
             'Content-Type': 'application/json'     
         }, 
         body: JSON.stringify(data)
     })
+    let res = await response.json()
+    if (response.ok) {
+    console.log(res)
+    window.location.href=`./confirmation.html?id=${res.orderId}`
+    } else {
+        window.alert('Oups ! Veuillez tenter ulterieurement')
+    }
 }
 
-const submit = async () => {
-    document.getElementById('submitCommand').addEventListener('click', (e) => {
+const submit = () => {
+    
+    let sender = {
+        firstName: form.firstName.value,
+        lastName: form.lastName.value,
+        address: form.address.value,
+        city: form.city.value,
+        email: form.mail.value
+    }
 
-        let sender = {
-            firstName: form.firstName.value,
-            lastName: form.lastName.value,
-            address: form.address.value,
-            mail: form.mail.value,
-            city: form.city.value
+    let command = []
+
+    for (let item of cart) {
+        for (let i = 0; i < item.quantity; i++) {
+            command.push(item.ref)
         }
+    }
 
-        let products = []
-
-        for (let item of cart) {
-            for (let i = 0; i < item.quantity; i++) {
-                command.push(item.ref)
-            }
-        }
-
-        send({
-            contact: sender,
-            command: products
-        })
+    send({
+        contact: sender,
+        products : command
     })
 
 }
 
 
-// *****************************************************************
+const validForm = () => {
 
-// async function send(e) {
+    let form = document.getElementById("form")
 
-//     let contact = {
-//         firstName : form.firstName.value, 
-//         lastName : form.lastName.value,
-//         adress : form.adress.value,
-//         mail : form.adress.mail,
-//         city : form.city.value
-//     }
+    form.addEventListener('submit', (e) => {
+        let success = true
+        e.preventDefault()
 
-//     let command = []
+        let fields = [{
+            element: form.firstName,
+            expression: regex.name,
+            errorMessage: 'Le prénom n\'est pas correct'
+        },
+        {
+            element: form.lastName,
+            expression: regex.name,
+            errorMessage: 'Le nom n\'est pas correct'
+        },
+        {
+            element: form.mail,
+            expression: regex.mail,
+            errorMessage: 'Adresse mail non valide'
+        },
+        {
+            element: form.address,
+            expression: regex.address,
+            errorMessage: 'L\'adresse n\'est pas valide'
+        },
+        {
+            element: form.zipCode,
+            expression: regex.zipCode,
+            errorMessage: 'Code postal non valide'
+        },
+        {
+            element: form.city,
+            expression: regex.name,
+            errorMessage: 'La ville n\'est pas valide'
+        }]
 
-//     for(let item of cart) {
-//         for (let i = 0; i < item.quantity; i++) {
-//             command.push(item.ref)
-//         }
-//     }
 
-//     fetch( url +"/order", {
-//       method: "POST",
-//       headers: {
-//         'Accept': 'application/json', 
-//         'Content-Type': 'application/json'
-//       },
-      
-//       body: {
-//           contact : contact, 
-//           products : command
-//         }
+        for (let field of fields) {
+            let test = validField(field.element, field.expression, field.errorMessage)
+            success *= test
+        }
 
-//     })
-//     .then(function(res) {
-//       if (res.ok) {
-//         return res.json();
-//       }
-//     })
-//     // .then(function(value) {
-//     //     document
-//     //       .getElementById("result")
-//     //       .innerText = value.postData.text;
-//     // });
-//   }
-  
-//   function submitCommand() {
-//   document
-//     .getElementById("form")
-//     .addEventListener("submit", send);
-// }
+        if (success) {
+            submit()
+
+        } else {
+            e.preventDefault()
+        }
+    })
+}
+
+
+function confirmation () {
+    let container = document.getElementById('confirmation')
+    let message = generateText(`Merci pour votre commande numéro ${id}`)
+    container.appendChild(message)
+
+    localStorage.removeItem("productsListInCart")
+
+    countCart()
+}
