@@ -4,23 +4,27 @@ const url = "http://localhost:3000/api/teddies"
 
 //fonction pour générer les alertes
 const generateAlerte = (message, success = "danger") => {
-
-    let div = document.createElement('div')
-    div.innerText = message
-    div.className(`alerte alerte-${success} notification`)
-    document.getElementsByTagName( 'body' )[0].appendChild( div )
+    // let div = document.createElement('div')
+    // div.innerText = message
+    // div.className(`alerte alerte-${success} notification`)
+    // document.getElementsByTagName( 'body' )[0].appendChild( div )
 }
 
 //fonction d'appel webservice sécurisée
 let get = async (route) => {
-	let response = await fetch(url + route)
-	if( response.ok ) {
-		return response.json()
-	} else if (response.status === 404) {
-        generateAlerte("ce produit n'existe pas")
-    }
-	else {
-		throw "Erreur sur la requête"
+    try {
+        let response = await fetch(url + route)
+        if (response.ok) {
+            return response.json()
+        } else if (response.status === 404) {
+            generateAlerte("ce produit n'existe pas")
+        }
+        else {
+            throw "Erreur sur la requête"
+        }
+    } catch (e) {
+        console.log(e)
+        alert('Server down')
     }
 }
 
@@ -308,6 +312,7 @@ async function runProduct() {
 let countCart = async () => {
 
     let numberOfProductsInCart = 0
+    cart = JSON.parse(localStorage.getItem("productsListInCart"))
 
     if (cart) {
         for (let i = 0; i < cart.length; i++) {
@@ -452,7 +457,7 @@ const validField = (element, expression, errorMessage) => {
 const regex = {
     mail : /^[a-z0-9.\-_]+[@]{1}[a-z0-9.\-_]+[.]{1}[a-z]{2,}$/i,
     name : /^[a-zéèêïëà -]{2,}$/i,
-    zipCode : /^[0-9]{1,6}$/,
+    zipCode : /^[0-9]{5}$/,
     address : /^[a-z0-9éèêëïà, -]{3,}$/i
 }
 
