@@ -24,7 +24,7 @@ let get = async (route) => {
         }
     } catch (e) {
         console.log(e)
-        alert('Server down')
+        window.location.href=`./error.html`
     }
 }
 
@@ -200,7 +200,7 @@ async function runIndex() {
         const description = generateP(peluche.description, "card-text")
         cardBody.appendChild(description)
 
-        const price = generateP(`Prix : ${peluche.price} €`, "card-text")
+        const price = generateP(`Prix : ${ generatePrice(peluche.price/100)}`, "card-text")
         cardBody.appendChild(price)
 
         const button = generateLink("btn btn-primary stretched-link m-2", `./product.html?id=${peluche._id}`, "Voir l'article")
@@ -239,7 +239,7 @@ async function runProduct() {
     description.textContent = product.description
 
     const price = document.getElementById("price")
-    price.textContent = product.price /100
+    price.textContent = generatePrice(product.price /100)
 
     //Boucle for pour le menu déroulant des couleurs
     for (i=0; i < product.colors.length; i++){
