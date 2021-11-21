@@ -41,7 +41,7 @@ const generateDiv = (className = '') => {
     return div
 }
 
-const generateImg = (className = '', alt, src) => {
+const generateImg = (alt, src, className = '') => {
     let img = document.createElement('img')
     img.src = src
     img.className = className
@@ -49,14 +49,14 @@ const generateImg = (className = '', alt, src) => {
     return img
 }
 
-const generateTitle = (level, className = '', content) => {
+const generateTitle = (level, content, className = '') => {
     let title = document.createElement(`h${level}`)
     title.className = className
     title.textContent = content
     return title
 }
 
-const generateP = (className = '', content) => {
+const generateP = (content, className = '') => {
     let p = document.createElement('p')
     p.className = className
     p.textContent = content
@@ -111,7 +111,7 @@ const generateSelect = (options = {}, defaultValue = null) => {
     return select
 }
 
-const generateButton = (className = '', content) => {
+const generateButton = (content, className = '') => {
     let button = document.createElement('button')
     button.className = className
     button.innerHTML = content
@@ -188,19 +188,19 @@ async function runIndex() {
         const card = generateDiv("card m-2")
         col.appendChild(card)
 
-        const productImg = generateImg('card-img-top', `photo du produit ${peluche.name}`, peluche.imageUrl)
+        const productImg = generateImg(`photo du produit ${peluche.name}`, peluche.imageUrl, 'card-img-top')
         card.appendChild(productImg)
 
         const cardBody = generateDiv("card-body")
         card.appendChild(cardBody)
 
-        const name = generateTitle(2 ,"card-title text-center", peluche.name)
+        const name = generateTitle(2 , peluche.name, "card-title text-center")
         cardBody.appendChild(name)
 
-        const description = generateP("card-text", peluche.description)
+        const description = generateP(peluche.description, "card-text")
         cardBody.appendChild(description)
 
-        const price = generateP("card-text", `Prix : ${peluche.price} €` )
+        const price = generateP(`Prix : ${peluche.price} €`, "card-text")
         cardBody.appendChild(price)
 
         const button = generateLink("btn btn-primary stretched-link m-2", `./product.html?id=${peluche._id}`, "Voir l'article")
@@ -374,7 +374,7 @@ async function runCart() {
             const colImg = generateDiv('col-md-1 my-2')
             row.appendChild(colImg)
 
-            const img = generateImg('img-fluid', `photo du produit ${product.name}`, cacheProducts[item.ref].imageUrl)
+            const img = generateImg(`photo du produit ${product.name}`, cacheProducts[item.ref].imageUrl, 'img-fluid')
             colImg.appendChild(img)
 
             const colTitle = generateDiv('col-md-5')
@@ -405,10 +405,10 @@ async function runCart() {
             })
 
             const removeProduct = generateButton(
-                "btn btn-outline-danger mx-1",
                 `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
             <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
-            </svg>`
+            </svg>`, 
+            "btn btn-outline-danger mx-1"
             )
             colQuantity.appendChild(removeProduct)
 
