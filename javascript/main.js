@@ -561,13 +561,38 @@ const validForm = () => {
 }
 
 
-function confirmation () {
-    let container = document.getElementById('confirmation')
+async function confirmation () {
+
+    if(!cart || cart.length === 0) {
+
+        window.location.href='./index.html'
     
-    let confirmation = generateAlerte(`Merci pour votre commande numéro ${id}`)
-    container.appendChild(confirmation)
+    } else { 
+        
+        let container = document.getElementById('confirmation')
+        let totalPrice = 0
 
-    localStorage.removeItem("productsListInCart")
+        for (let item of cart) {
+            if (cacheProducts[item.ref] === undefined) {
+                let product = await get(`/${item.ref}`)
+                cacheProducts[item.ref] = product
+            }
 
-    countCart()
+            totalPrice = totalPrice + (cacheProducts[item.ref].price * item.quantity / 100) 
+        }
+
+        let confirmation = generateAlerte(`Merci pour votre commande !`)
+        confirmation.appendChild(generateBr())
+        confirmation.appendChild(generateText(`Numéro de commande : ${id}`))
+        confirmation.appendChild(generateBr())
+        confirmation.appendChild(generateText(`Montant total : ${generatePrice(totalPrice)}`))
+
+
+        container.appendChild(confirmation)
+
+        localStorage.removeItem("productsListInCart")
+
+        countCart()
+
+    }
 }
