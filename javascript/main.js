@@ -3,11 +3,11 @@
 const url = "http://localhost:3000/api/teddies"
 
 //fonction pour générer les alertes
-const generateAlerte = (message, success = "danger") => {
-    // let div = document.createElement('div')
-    // div.innerText = message
-    // div.className(`alerte alerte-${success} notification`)
-    // document.getElementsByTagName( 'body' )[0].appendChild( div )
+const generateAlerte = (message, success = "success") => {
+    let div = document.createElement('div')
+    div.className = `alert alert-${success} d-flex`
+    div.innerHTML = message
+    return div    
 }
 
 //fonction d'appel webservice sécurisée
@@ -563,8 +563,9 @@ const validForm = () => {
 
 function confirmation () {
     let container = document.getElementById('confirmation')
-    let message = generateText(`Merci pour votre commande numéro ${id}`)
-    container.appendChild(message)
+    
+    let confirmation = generateAlerte(`Merci pour votre commande numéro ${id}`)
+    container.appendChild(confirmation)
 
     localStorage.removeItem("productsListInCart")
 
