@@ -10,21 +10,33 @@ const generateAlerte = (message, success = "success") => {
     return div    
 }
 
+let responseError404 = false
+
 //fonction d'appel webservice sécurisée
-let get = async (route) => {
+let get = async (route, errorFunction) => {
     try {
         let response = await fetch(url + route)
+
         if (response.ok) {
+        
+            responseError404 = false
             return response.json()
+        
         } else if (response.status === 404) {
-            generateAlerte("ce produit n'existe pas")
-        }
-        else {
+        
+            responseError404 = true
+        
+        } else {
+        
             throw "Erreur sur la requête"
+        
         }
+    
     } catch (e) {
+    
         console.log(e)
         window.location.href=`./error.html`
+    
     }
 }
 
@@ -125,6 +137,14 @@ const generateIcon = (className) => {
     return icon
 }
 
+let disableProduct = () => {
+    let container = document.getElementById("productContainer")
+    container.innerHTML = ''
+
+    let error = generateAlerte("Il semble que ce produit ne soit plus disponible", 'danger')
+    container.appendChild(error)
+
+}
 
 /*FONCTIONS POUR MANIPULER LE PANIER*/
 
@@ -222,88 +242,96 @@ const urlSearchParams = new URLSearchParams(queryString_url)
 const id = urlSearchParams.get("id")
 
 async function runProduct() {
-    
+
     //2. Appel webservice
-    let product = await get(`/${id}`)
+    let product = await get(`/${id}`, disableProduct)
 
-    //3. Recuperer et compléter les elements à compléter dans le DOM :
+    if (!id || responseError404) {
 
-    const productImg = document.getElementById("productImg")
-    productImg.setAttribute("src", product.imageUrl)
-    productImg.setAttribute("alt", `photo du produit ${product.name}`)
+        alert('un probleme est survenu')
+        window.location.href="./index.html"
+    
+    } else {
 
-    const productName = document.getElementById("name")
-    productName.textContent = product.name
+        // if(responseError === 404) 
+        //3. Recuperer et compléter les elements à compléter dans le DOM :
 
-    const description = document.getElementById("description")
-    description.textContent = product.description
+        const productImg = document.getElementById("productImg")
+        productImg.setAttribute("src", product.imageUrl)
+        productImg.setAttribute("alt", `photo du produit ${product.name}`)
 
-    const price = document.getElementById("price")
-    price.textContent = generatePrice(product.price /100)
+        const productName = document.getElementById("name")
+        productName.textContent = product.name
 
-    //Boucle for pour le menu déroulant des couleurs
-    for (i=0; i < product.colors.length; i++){
+        const description = document.getElementById("description")
+        description.textContent = product.description
 
-        //Creation de l'element option du menu déroulant
-        const colorList = document.createElement("option")
-        colorList.setAttribute("value", product.colors[i])
+        const price = document.getElementById("price")
+        price.textContent = generatePrice(product.price / 100)
+
+        //Boucle for pour le menu déroulant des couleurs
+        for (i = 0; i < product.colors.length; i++) {
+
+            //Creation de l'element option du menu déroulant
+            const colorList = document.createElement("option")
+            colorList.setAttribute("value", product.colors[i])
 
 
-        //Ajout du contenu aux <options>
-        colorList.textContent = product.colors[i]
+            //Ajout du contenu aux <options>
+            colorList.textContent = product.colors[i]
 
-        //Ajout des couleurs dans le DOM
-        const colorMenu = document.getElementById("selectColor")
-        colorMenu.appendChild(colorList)  
+            //Ajout des couleurs dans le DOM
+            const colorMenu = document.getElementById("selectColor")
+            colorMenu.appendChild(colorList)
 
-    }
-
-    const addToCartButton = document.querySelector("#AddToCartButton")
-    addToCartButton.addEventListener("click", function(e) {
-
-        // 3. Créer la constante correspondant à l'indexe de la couleur du produit
-        const colorId = document.querySelector("select")     // Aller chercher l'input select contenant les couleurs
-        let colorSelected = colorId.value    //Recuperer la valeur du menu déroulant
-
-        //4. Creer l'objet à ajouter dans le produit
-        if (colorSelected == "NaV") {
-            colorId.classList.add("border-danger") //encadré rouge si la couleur n'a pas été choisie
-        } else { // sinon créer l'objet du produit à ajouter dans le panier
-            colorId.classList.remove("border-danger")
-            let productToAddinCart = {
-                ref: id,
-                color: colorSelected,
-                quantity: 1
-            }
-
-            //5. Ajouter le produit dans le local storage
-
-            if (cart) { //Si il y a déjà quelque chose dans le panier
-
-                let productAlreadyInCart = false // variable qui m'indique si le produit est déjà dans le panier ou non
-
-                for (let i = 0; i < cart.length; i++) { // pour chaque produit dans le panier
-                    if (cart[i].ref == productToAddinCart.ref && cart[i].color == productToAddinCart.color) { //si la reference et la couleur est la même 
-                        cart[i].quantity = cart[i].quantity + 1 // ajoute une quantité
-                        productAlreadyInCart = true //préviens que le produit était déjà dans le panier
-                    }
-                }
-
-                if (!productAlreadyInCart) { //si le produit n'est pas dans le panier
-                    cart.push(productToAddinCart)
-                }
-                localStorage.setItem("productsListInCart", JSON.stringify(cart)) // met à jour le local storage 
-
-            } else {
-                cart = [] //crée un tableau qui contiendra la liste des produits du panier
-                cart.push(productToAddinCart) //Ajoute le produit dans la liste
-                localStorage.setItem("productsListInCart", JSON.stringify(cart)) // envoie dans le local storage
-            }
         }
 
-        countCart()
-    })
+        const addToCartButton = document.querySelector("#AddToCartButton")
+        addToCartButton.addEventListener("click", function (e) {
 
+            // 3. Créer la constante correspondant à l'indexe de la couleur du produit
+            const colorId = document.querySelector("select")     // Aller chercher l'input select contenant les couleurs
+            let colorSelected = colorId.value    //Recuperer la valeur du menu déroulant
+
+            //4. Creer l'objet à ajouter dans le produit
+            if (colorSelected == "NaV") {
+                colorId.classList.add("border-danger") //encadré rouge si la couleur n'a pas été choisie
+            } else { // sinon créer l'objet du produit à ajouter dans le panier
+                colorId.classList.remove("border-danger")
+                let productToAddinCart = {
+                    ref: id,
+                    color: colorSelected,
+                    quantity: 1
+                }
+
+                //5. Ajouter le produit dans le local storage
+
+                if (cart) { //Si il y a déjà quelque chose dans le panier
+
+                    let productAlreadyInCart = false // variable qui m'indique si le produit est déjà dans le panier ou non
+
+                    for (let i = 0; i < cart.length; i++) { // pour chaque produit dans le panier
+                        if (cart[i].ref == productToAddinCart.ref && cart[i].color == productToAddinCart.color) { //si la reference et la couleur est la même 
+                            cart[i].quantity = cart[i].quantity + 1 // ajoute une quantité
+                            productAlreadyInCart = true //préviens que le produit était déjà dans le panier
+                        }
+                    }
+
+                    if (!productAlreadyInCart) { //si le produit n'est pas dans le panier
+                        cart.push(productToAddinCart)
+                    }
+                    localStorage.setItem("productsListInCart", JSON.stringify(cart)) // met à jour le local storage 
+
+                } else {
+                    cart = [] //crée un tableau qui contiendra la liste des produits du panier
+                    cart.push(productToAddinCart) //Ajoute le produit dans la liste
+                    localStorage.setItem("productsListInCart", JSON.stringify(cart)) // envoie dans le local storage
+                }
+            }
+
+            countCart()
+        })
+    }
 }
 
 /*------------------------------------------------------------------------------------------------------*/
@@ -360,69 +388,75 @@ async function runCart() {
         let total = 0
         let cartContainer = document.getElementById('product-table')
 
-        for (let item of cart) {
+        for (let item of cart) { //for (let i=0, i <cart.lenght, i++) { i -= }  attention item devient cart[i] !!
             if (cacheProducts[item.ref] === undefined) {
                 let product = await get(`/${item.ref}`)
                 cacheProducts[item.ref] = product
             }
 
-            let product = cacheProducts[item.ref]
-
-            const row = generateDiv('row')
-            cartContainer.appendChild(row)
-
-            const colImg = generateDiv('col-md-1 my-2')
-            row.appendChild(colImg)
-
-            const img = generateImg(`photo du produit ${product.name}`, cacheProducts[item.ref].imageUrl, 'img-fluid')
-            colImg.appendChild(img)
-
-            const colTitle = generateDiv('col-md-5')
-            row.appendChild(colTitle)
-            colTitle.appendChild(generateStrong(`${cacheProducts[item.ref].name} - (${item.color}) `))
-            colTitle.appendChild(generateBr())
-            colTitle.appendChild(generateSmall(item.ref))
-
-            const colPrice = generateDiv('col-md-2')
-            colPrice.appendChild(generateText(generatePrice(cacheProducts[item.ref].price / 100)))
-            row.appendChild(colPrice)
-
-
-            //Menu déroulant avec les quantités
-            let options = {}
-            for (let i = 1; i <= 99; i++) {
-                options[i] = i
-            }
-            let select = generateSelect(options, item.quantity)
-            const colQuantity = generateDiv('col-md-2')
-            colQuantity.appendChild(select)
-            row.appendChild(colQuantity)
-
-            select.addEventListener('change', () => {
-                updateCart(item.ref, item.color, Number(select.value))
-                countCart()
-                refreshCart()
-            })
-
-            const removeProduct = generateButton(
-                `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
-            </svg>`, 
-            "btn btn-outline-danger mx-1"
-            )
-            colQuantity.appendChild(removeProduct)
-
-            removeProduct.addEventListener("click", () => {
+            if (responseError404) {
                 removeItemInCart(item.ref, item.color)
-                countCart()
-                refreshCart()
-            })
+                alert(`le produit ref : ${item.ref} a été supprimé du panier. Cela se produit généralement quand le produit n'est plus disponible.`)
+            } else {
 
-            const colTotal = generateDiv('col-md-2')
-            colTotal.appendChild(generateText(generatePrice((cacheProducts[item.ref].price * item.quantity) / 100)))
-            row.appendChild(colTotal)
+                let product = cacheProducts[item.ref]
 
-            total = total + (cacheProducts[item.ref].price * item.quantity / 100)
+                const row = generateDiv('row')
+                cartContainer.appendChild(row)
+
+                const colImg = generateDiv('col-md-1 my-2')
+                row.appendChild(colImg)
+
+                const img = generateImg(`photo du produit ${product.name}`, cacheProducts[item.ref].imageUrl, 'img-fluid')
+                colImg.appendChild(img)
+
+                const colTitle = generateDiv('col-md-5')
+                row.appendChild(colTitle)
+                colTitle.appendChild(generateStrong(`${cacheProducts[item.ref].name} - (${item.color}) `))
+                colTitle.appendChild(generateBr())
+                colTitle.appendChild(generateSmall(item.ref))
+
+                const colPrice = generateDiv('col-md-2')
+                colPrice.appendChild(generateText(generatePrice(cacheProducts[item.ref].price / 100)))
+                row.appendChild(colPrice)
+
+
+                //Menu déroulant avec les quantités
+                let options = {}
+                for (let i = 1; i <= 99; i++) {
+                    options[i] = i
+                }
+                let select = generateSelect(options, item.quantity)
+                const colQuantity = generateDiv('col-md-2')
+                colQuantity.appendChild(select)
+                row.appendChild(colQuantity)
+
+                select.addEventListener('change', () => {
+                    updateCart(item.ref, item.color, Number(select.value))
+                    countCart()
+                    refreshCart()
+                })
+
+                const removeProduct = generateButton(
+                    `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+            </svg>`,
+                    "btn btn-outline-danger mx-1"
+                )
+                colQuantity.appendChild(removeProduct)
+
+                removeProduct.addEventListener("click", () => {
+                    removeItemInCart(item.ref, item.color)
+                    countCart()
+                    refreshCart()
+                })
+
+                const colTotal = generateDiv('col-md-2')
+                colTotal.appendChild(generateText(generatePrice((cacheProducts[item.ref].price * item.quantity) / 100)))
+                row.appendChild(colTotal)
+
+                total = total + (cacheProducts[item.ref].price * item.quantity / 100)
+            }
         }
 
         const totalCart = generateDiv('row')
@@ -568,7 +602,7 @@ async function confirmation () {
         window.location.href='./index.html'
     
     } else { 
-        
+
         let container = document.getElementById('confirmation')
         let totalPrice = 0
 
