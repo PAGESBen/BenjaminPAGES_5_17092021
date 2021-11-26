@@ -192,10 +192,9 @@ let removeItemInCart = (productId, color) => {
 async function runIndex() {
 
     let products = await get('/')
+    console.log(products)
 
     for (let peluche of products) {
-
-        console.log(peluche)
         
         //generation les elements du dom -- const newElt = document.createElement("div") + ajout de leur classes nomElement.classList.add("", "", "", "");
 
@@ -244,7 +243,8 @@ const id = urlSearchParams.get("id")
 async function runProduct() {
 
     //2. Appel webservice
-    let product = await get(`/${id}`, disableProduct)
+    let product = await get(`/${id}`)
+    console.log(product)
 
     if (!id || responseError404) {
 
@@ -253,7 +253,6 @@ async function runProduct() {
     
     } else {
 
-        // if(responseError === 404) 
         //3. Recuperer et compléter les elements à compléter dans le DOM :
 
         const productImg = document.getElementById("productImg")
@@ -388,18 +387,21 @@ async function runCart() {
         let total = 0
         let cartContainer = document.getElementById('product-table')
 
-        for (let item of cart) { //for (let i=0, i <cart.lenght, i++) { i -= }  attention item devient cart[i] !!
-            if (cacheProducts[item.ref] === undefined) {
-                let product = await get(`/${item.ref}`)
-                cacheProducts[item.ref] = product
+        for (let i=0; i < cart.length; i++) { //for (let i=0, i <cart.lenght, i++) { i -= }  attention item devient cart[i] !!
+            if (cacheProducts[cart[i].ref] === undefined) {
+                let product = await get(`/${cart[i].ref}`)
+                cacheProducts[cart[i].ref] = product
+                console.log(product)
             }
 
             if (responseError404) {
-                removeItemInCart(item.ref, item.color)
-                alert(`le produit ref : ${item.ref} a été supprimé du panier. Cela se produit généralement quand le produit n'est plus disponible.`)
+                removeItemInCart(cart[i].ref, cart[i].color)
+                alert(`le produit ref : ${cart[i].ref} a été supprimé du panier. Cela se produit généralement quand le produit n'est plus disponible.`)
+                i --
+                cart.lenght 
             } else {
 
-                let product = cacheProducts[item.ref]
+                let product = cacheProducts[cart[i].ref]
 
                 const row = generateDiv('row')
                 cartContainer.appendChild(row)
@@ -407,32 +409,32 @@ async function runCart() {
                 const colImg = generateDiv('col-md-1 my-2')
                 row.appendChild(colImg)
 
-                const img = generateImg(`photo du produit ${product.name}`, cacheProducts[item.ref].imageUrl, 'img-fluid')
+                const img = generateImg(`photo du produit ${product.name}`, cacheProducts[cart[i].ref].imageUrl, 'img-fluid')
                 colImg.appendChild(img)
 
                 const colTitle = generateDiv('col-md-5')
                 row.appendChild(colTitle)
-                colTitle.appendChild(generateStrong(`${cacheProducts[item.ref].name} - (${item.color}) `))
+                colTitle.appendChild(generateStrong(`${cacheProducts[cart[i].ref].name} - (${cart[i].color}) `))
                 colTitle.appendChild(generateBr())
-                colTitle.appendChild(generateSmall(item.ref))
+                colTitle.appendChild(generateSmall(cart[i].ref))
 
                 const colPrice = generateDiv('col-md-2')
-                colPrice.appendChild(generateText(generatePrice(cacheProducts[item.ref].price / 100)))
+                colPrice.appendChild(generateText(generatePrice(cacheProducts[cart[i].ref].price / 100)))
                 row.appendChild(colPrice)
 
 
                 //Menu déroulant avec les quantités
                 let options = {}
-                for (let i = 1; i <= 99; i++) {
-                    options[i] = i
+                for (let q = 1; q <= 99; q++) {
+                    options[q] = q
                 }
-                let select = generateSelect(options, item.quantity)
+                let select = generateSelect(options, cart[i].quantity)
                 const colQuantity = generateDiv('col-md-2')
                 colQuantity.appendChild(select)
                 row.appendChild(colQuantity)
 
                 select.addEventListener('change', () => {
-                    updateCart(item.ref, item.color, Number(select.value))
+                    updateCart(cart[i].ref, cart[i].color, Number(select.value))
                     countCart()
                     refreshCart()
                 })
@@ -446,16 +448,16 @@ async function runCart() {
                 colQuantity.appendChild(removeProduct)
 
                 removeProduct.addEventListener("click", () => {
-                    removeItemInCart(item.ref, item.color)
+                    removeItemInCart(cart[i].ref, cart[i].color)
                     countCart()
                     refreshCart()
                 })
 
                 const colTotal = generateDiv('col-md-2')
-                colTotal.appendChild(generateText(generatePrice((cacheProducts[item.ref].price * item.quantity) / 100)))
+                colTotal.appendChild(generateText(generatePrice((cacheProducts[cart[i].ref].price * cart[i].quantity) / 100)))
                 row.appendChild(colTotal)
 
-                total = total + (cacheProducts[item.ref].price * item.quantity / 100)
+                total = total + (cacheProducts[cart[i].ref].price * cart[i].quantity / 100)
             }
         }
 
