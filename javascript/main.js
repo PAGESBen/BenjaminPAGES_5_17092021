@@ -1,6 +1,22 @@
-/*fonctions d'optimisation*/
+
 
 const url = "http://localhost:3000/api/teddies"
+
+//1. récupération de l'id du produit dans l'URL
+
+//a.recuperation de la chaine de caractère de l'url 
+const queryString_url = window.location.search
+
+//b.recupération de l'ID uniquement dans une constante "id"
+const urlSearchParams = new URLSearchParams(queryString_url)
+const id = urlSearchParams.get("id")
+
+//Variable du panier
+
+let cartQuantity = document.getElementById('cartCount')
+let cart = JSON.parse(localStorage.getItem("productsListInCart"))
+
+/*fonctions d'optimisation*/
 
 //fonction pour générer les alertes
 const generateAlerte = (message, success = "success") => {
@@ -39,11 +55,6 @@ let get = async (route, errorFunction) => {
     
     }
 }
-
-//Variable du panier
-
-let cartQuantity = document.getElementById('cartCount')
-let cart = JSON.parse(localStorage.getItem("productsListInCart"))
 
 // fonctions pour la création d'éléments dans le DOM
 
@@ -227,18 +238,8 @@ async function runIndex() {
     }
 }
 
-
 /*---------------------------------------------------------------------------------------*/
 //déclaration de la fonction runProduct de la page Product
-
-//1. récupération de l'id du produit dans l'URL
-
-//a.recuperation de la chaine de caractère de l'url 
-const queryString_url = window.location.search
-
-//b.recupération de l'ID uniquement dans une constante "id"
-const urlSearchParams = new URLSearchParams(queryString_url)
-const id = urlSearchParams.get("id")
 
 async function runProduct() {
 
