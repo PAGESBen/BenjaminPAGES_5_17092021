@@ -339,8 +339,10 @@ async function runProduct() {
                     cart.push(productToAddinCart) //Ajoute le produit dans la liste
                     localStorage.setItem("productsListInCart", JSON.stringify(cart)) // envoie dans le local storage
                 }
-            }
 
+                alert("votre produit a bien été ajouté au panier !")
+            }
+            
             countCart()
         })
     }
@@ -392,7 +394,7 @@ async function runCart() {
 
                 let product = cacheProducts[cart[i].ref]
 
-                const row = generateDiv('row')
+                const row = generateDiv('row border-top')
                 cartContainer.appendChild(row)
 
                 const colImg = generateDiv('col-md-1 my-2')
@@ -455,8 +457,8 @@ async function runCart() {
         }
 
         const totalRow = generateDiv('row w-100 my-3')
-        const totalCol = generateDiv('text-end fw-bold border')
-        totalCol.appendChild(generateText(`Total Commande : ${generatePrice(total)}`))
+        const totalCol = generateDiv('text-end fw-bold border-top')
+        totalCol.appendChild(generateText(`Total commande : ${generatePrice(total)}`))
         totalRow.appendChild(totalCol)
         cartContainer.appendChild(totalRow)
     }
