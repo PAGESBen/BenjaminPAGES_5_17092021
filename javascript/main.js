@@ -454,9 +454,11 @@ async function runCart() {
             }
         }
 
-        const totalCart = generateDiv('row')
-        totalCart.appendChild(generateText(`Montant total = ${generatePrice(total)}`))
-        cartContainer.appendChild(totalCart)
+        const totalRow = generateDiv('row w-100 my-3')
+        const totalCol = generateDiv('text-end fw-bold border')
+        totalCol.appendChild(generateText(`Total Commande : ${generatePrice(total)}`))
+        totalRow.appendChild(totalCol)
+        cartContainer.appendChild(totalRow)
     }
 }
 
@@ -484,19 +486,23 @@ const validField = (element, expression, errorMessage) => {
 
 const send = async (data) => {
 
-    let response = await fetch( `${url}/order`, {
-        method : 'POST', 
-        headers : {
-            'Content-Type': 'application/json'     
-        }, 
-        body: JSON.stringify(data)
-    })
-    let res = await response.json()
-    if (response.ok) {
-    console.log(res)
-    window.location.href=`./confirmation.html?id=${res.orderId}`
-    } else {
-        window.alert('Oups ! Veuillez tenter ulterieurement')
+    try {
+        let response = await fetch(`${url}/order`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        let res = await response.json()
+        if (response.ok) {
+            console.log(res)
+            window.location.href = `./confirmation.html?id=${res.orderId}`
+        } else {
+            window.alert('Oups ! Veuillez tenter ulterieurement')
+        }
+    } catch {
+        alert("Une erreur s'est produite. Veuillez réessayer ulterieurement !")
     }
 }
 
