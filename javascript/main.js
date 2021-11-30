@@ -1,32 +1,23 @@
-
-
+//route vers l'api
 const url = "http://localhost:3000/api/teddies"
+let responseError404 = false
 
-//1. récupération de l'id du produit dans l'URL
-
-//a.recuperation de la chaine de caractère de l'url 
+//recuperation de la chaine de caractère de l'url 
 const queryString_url = window.location.search
-
-//b.recupération de l'ID uniquement dans une constante "id"
 const urlSearchParams = new URLSearchParams(queryString_url)
 const id = urlSearchParams.get("id")
 
-//Variable du panier
-
+//Variables panier
 let cartQuantity = document.getElementById('cartCount')
 let cart = JSON.parse(localStorage.getItem("productsListInCart"))
 
-/*fonctions d'optimisation*/
-
-//fonction pour générer les alertes
-const generateAlerte = (message, success = "success") => {
-    let div = document.createElement('div')
-    div.className = `alert alert-${success} d-flex`
-    div.innerHTML = message
-    return div    
+//Expressions régulières
+const regex = {
+    mail : /^[a-z0-9.\-_]+[@]{1}[a-z0-9.\-_]+[.]{1}[a-z]{2,}$/i,
+    name : /^[a-zéèêïëà -]{2,}$/i,
+    zipCode : /^[0-9]{5}$/,
+    address : /^[a-z0-9éèêëïà, -]{3,}$/i
 }
-
-let responseError404 = false
 
 //fonction d'appel webservice sécurisée
 let get = async (route, errorFunction) => {
@@ -56,7 +47,15 @@ let get = async (route, errorFunction) => {
     }
 }
 
+/***********fonctions d'optimisation***********/
 // fonctions pour la création d'éléments dans le DOM
+
+const generateAlerte = (message, success = "success") => {
+    let div = document.createElement('div')
+    div.className = `alert alert-${success} d-flex`
+    div.innerHTML = message
+    return div    
+}
 
 const generateDiv = (className = '') => {
     let div = document.createElement('div')
@@ -104,6 +103,13 @@ const generateSmall = (content) => {
     let small = document.createElement('small')
     small.innerText = content
     return small
+}
+
+const generateSpan = (content, className='') => {
+    let span = document.createElement('span')
+    span.className = className
+    span.innerText = content
+    return span
 }
 
 const generateBr = () => {
@@ -157,7 +163,7 @@ let disableProduct = () => {
 
 }
 
-/*FONCTIONS POUR MANIPULER LE PANIER*/
+/***********Fonction pour manipuler le panier***********/
 
 let updateCart = async (productId, color, qty) => {
 
@@ -183,7 +189,6 @@ let updateCart = async (productId, color, qty) => {
 
 }
 
-
 let removeItemInCart = (productId, color) => {
     let i=0
 
@@ -197,8 +202,29 @@ let removeItemInCart = (productId, color) => {
     localStorage.setItem("productsListInCart", JSON.stringify(cart)) // met à jour le local storage 
 }
 
-/*---------------------------------------------------------------------------------------*/
-//déclaration de la fonction runIndex de la page Index
+//compteur panier
+let countCart = async () => {
+
+    let numberOfProductsInCart = 0
+    cart = JSON.parse(localStorage.getItem("productsListInCart"))
+
+    if (cart) {
+        for (let i = 0; i < cart.length; i++) {
+            numberOfProductsInCart = numberOfProductsInCart + cart[i].quantity
+        }
+    } else {
+        numberOfProductsInCart = 0
+    }
+
+    if (numberOfProductsInCart == 0) {
+        cartQuantity.classList.add("d-none")
+    } else {
+        cartQuantity.classList.remove("d-none")
+        cartQuantity.textContent = numberOfProductsInCart
+    }
+}
+
+/***********Fonction page index***********/
 
 async function runIndex() {
 
@@ -206,10 +232,7 @@ async function runIndex() {
     console.log(products)
 
     for (let peluche of products) {
-        
-        //generation les elements du dom -- const newElt = document.createElement("div") + ajout de leur classes nomElement.classList.add("", "", "", "");
-
-        // On va récuperer le contener principal dans le DOM -- let elt = document.getElementById('main');
+   
         let mainContainer = document.getElementById('productslist')
 
         const col = generateDiv("col-12 col-lg-4")
@@ -238,23 +261,19 @@ async function runIndex() {
     }
 }
 
-/*---------------------------------------------------------------------------------------*/
-//déclaration de la fonction runProduct de la page Product
+/***********Fonction page product***********/
 
 async function runProduct() {
 
-    //2. Appel webservice
     let product = await get(`/${id}`)
     console.log(product)
 
-    if (!id || responseError404) {
+    if (!id || responseError404) { //si response.404
 
         alert('un probleme est survenu')
         window.location.href="./index.html"
     
     } else {
-
-        //3. Recuperer et compléter les elements à compléter dans le DOM :
 
         const productImg = document.getElementById("productImg")
         productImg.setAttribute("src", product.imageUrl)
@@ -269,34 +288,29 @@ async function runProduct() {
         const price = document.getElementById("price")
         price.textContent = generatePrice(product.price / 100)
 
-        //Boucle for pour le menu déroulant des couleurs
+        //Creation du menu déroulant des couleurs
         for (i = 0; i < product.colors.length; i++) {
 
-            //Creation de l'element option du menu déroulant
             const colorList = document.createElement("option")
             colorList.setAttribute("value", product.colors[i])
 
-
-            //Ajout du contenu aux <options>
             colorList.textContent = product.colors[i]
 
-            //Ajout des couleurs dans le DOM
             const colorMenu = document.getElementById("selectColor")
             colorMenu.appendChild(colorList)
-
         }
 
+        //Gestion bouton ajouter au panier
         const addToCartButton = document.querySelector("#AddToCartButton")
         addToCartButton.addEventListener("click", function (e) {
 
-            // 3. Créer la constante correspondant à l'indexe de la couleur du produit
-            const colorId = document.querySelector("select")     // Aller chercher l'input select contenant les couleurs
-            let colorSelected = colorId.value    //Recuperer la valeur du menu déroulant
+            //recuperation de la couleur
+            const colorId = document.querySelector("select")
+            let colorSelected = colorId.value
 
-            //4. Creer l'objet à ajouter dans le produit
-            if (colorSelected == "NaV") {
-                colorId.classList.add("border-danger") //encadré rouge si la couleur n'a pas été choisie
-            } else { // sinon créer l'objet du produit à ajouter dans le panier
+            if (colorSelected == "NaV") { //si aucune couleur n'a été sélectionnée
+                colorId.classList.add("border-danger") 
+            } else {
                 colorId.classList.remove("border-danger")
                 let productToAddinCart = {
                     ref: id,
@@ -304,13 +318,11 @@ async function runProduct() {
                     quantity: 1
                 }
 
-                //5. Ajouter le produit dans le local storage
-
                 if (cart) { //Si il y a déjà quelque chose dans le panier
 
-                    let productAlreadyInCart = false // variable qui m'indique si le produit est déjà dans le panier ou non
+                    let productAlreadyInCart = false
 
-                    for (let i = 0; i < cart.length; i++) { // pour chaque produit dans le panier
+                    for (let i = 0; i < cart.length; i++) { //si le produit est déjà dans le panier
                         if (cart[i].ref == productToAddinCart.ref && cart[i].color == productToAddinCart.color) { //si la reference et la couleur est la même 
                             cart[i].quantity = cart[i].quantity + 1 // ajoute une quantité
                             productAlreadyInCart = true //préviens que le produit était déjà dans le panier
@@ -334,32 +346,8 @@ async function runProduct() {
     }
 }
 
-/*------------------------------------------------------------------------------------------------------*/
-// compte du panier 
+/***********Fonction page panier***********/
 
-let countCart = async () => {
-
-    let numberOfProductsInCart = 0
-    cart = JSON.parse(localStorage.getItem("productsListInCart"))
-
-    if (cart) {
-        for (let i = 0; i < cart.length; i++) {
-            numberOfProductsInCart = numberOfProductsInCart + cart[i].quantity
-        }
-    } else {
-        numberOfProductsInCart = 0
-    }
-
-    if (numberOfProductsInCart == 0) {
-        cartQuantity.classList.add("d-none")
-    } else {
-        cartQuantity.classList.remove("d-none")
-        cartQuantity.textContent = numberOfProductsInCart
-    }
-}
-
-
-/*-------------------------------------------------*/
 let cacheProducts = {}
 
 async function runCart() {
@@ -388,7 +376,7 @@ async function runCart() {
         let total = 0
         let cartContainer = document.getElementById('product-table')
 
-        for (let i=0; i < cart.length; i++) { //for (let i=0, i <cart.lenght, i++) { i -= }  attention item devient cart[i] !!
+        for (let i=0; i < cart.length; i++) {
             if (cacheProducts[cart[i].ref] === undefined) {
                 let product = await get(`/${cart[i].ref}`)
                 cacheProducts[cart[i].ref] = product
@@ -420,13 +408,15 @@ async function runCart() {
                 colTitle.appendChild(generateSmall(cart[i].ref))
 
                 const colPrice = generateDiv('col-md-2')
+                const labelProductPrice = generateSpan('P.U. : ', 'd-inline d-md-none')
+                colPrice.appendChild(labelProductPrice)
                 colPrice.appendChild(generateText(generatePrice(cacheProducts[cart[i].ref].price / 100)))
                 row.appendChild(colPrice)
 
 
                 //Menu déroulant avec les quantités
                 let options = {}
-                for (let q = 1; q <= 99; q++) {
+                for (let q = 1; q <= 50; q++) {
                     options[q] = q
                 }
                 let select = generateSelect(options, cart[i].quantity)
@@ -455,6 +445,8 @@ async function runCart() {
                 })
 
                 const colTotal = generateDiv('col-md-2')
+                const labelTotalProductPrice = generateSpan('Prix : ', 'd-inline d-md-none')
+                colTotal.appendChild(labelTotalProductPrice)
                 colTotal.appendChild(generateText(generatePrice((cacheProducts[cart[i].ref].price * cart[i].quantity) / 100)))
                 row.appendChild(colTotal)
 
@@ -474,8 +466,7 @@ const refreshCart = () => {
     runCart()
 }
 
-/* Controle du Formulaire grace à regex*/
-
+//Controle du Formulaire grace à regex
 const validField = (element, expression, errorMessage) => {
 
     let value = element.value.trim()
@@ -490,14 +481,6 @@ const validField = (element, expression, errorMessage) => {
         return true
     }
 }
-
-const regex = {
-    mail : /^[a-z0-9.\-_]+[@]{1}[a-z0-9.\-_]+[.]{1}[a-z]{2,}$/i,
-    name : /^[a-zéèêïëà -]{2,}$/i,
-    zipCode : /^[0-9]{5}$/,
-    address : /^[a-z0-9éèêëïà, -]{3,}$/i
-}
-
 
 const send = async (data) => {
 
@@ -542,7 +525,6 @@ const submit = () => {
 
 }
 
-
 const validForm = () => {
 
     let form = document.getElementById("form")
@@ -582,7 +564,6 @@ const validForm = () => {
             errorMessage: 'La ville n\'est pas valide'
         }]
 
-
         for (let field of fields) {
             let test = validField(field.element, field.expression, field.errorMessage)
             success *= test
@@ -597,6 +578,7 @@ const validForm = () => {
     })
 }
 
+/***********Fonction page confirmation***********/
 
 async function confirmation () {
 
