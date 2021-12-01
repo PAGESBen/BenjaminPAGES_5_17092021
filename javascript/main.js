@@ -47,6 +47,28 @@ let get = async (route, errorFunction) => {
     }
 }
 
+const send = async (data) => {
+
+    try {
+        let response = await fetch(`${url}/order`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        let res = await response.json()
+        if (response.ok) {
+            console.log(res)
+            window.location.href = `./confirmation.html?id=${res.orderId}`
+        } else {
+            window.alert('Oups ! Veuillez tenter ulterieurement')
+        }
+    } catch {
+        alert("Une erreur s'est produite. Veuillez réessayer ulterieurement !")
+    }
+}
+
 /***********fonctions d'optimisation***********/
 // fonctions pour la création d'éléments dans le DOM
 
@@ -390,6 +412,7 @@ async function runCart() {
                 alert(`le produit ref : ${cart[i].ref} a été supprimé du panier. Cela se produit généralement quand le produit n'est plus disponible.`)
                 i --
                 cart.lenght 
+                
             } else {
 
                 let product = cacheProducts[cart[i].ref]
@@ -483,28 +506,6 @@ const validField = (element, expression, errorMessage) => {
     } else {
         small.innerHTML = ''
         return true
-    }
-}
-
-const send = async (data) => {
-
-    try {
-        let response = await fetch(`${url}/order`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        let res = await response.json()
-        if (response.ok) {
-            console.log(res)
-            window.location.href = `./confirmation.html?id=${res.orderId}`
-        } else {
-            window.alert('Oups ! Veuillez tenter ulterieurement')
-        }
-    } catch {
-        alert("Une erreur s'est produite. Veuillez réessayer ulterieurement !")
     }
 }
 
